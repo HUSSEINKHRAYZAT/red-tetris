@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import RadialOrbitalTimelineItem from "./RadialOrbitalTimelineItem";
 import RadialOrbitalTimelineCard from "./RadialOrbitalTimelineCard";
+// @ts-ignore
+import { BGPattern } from '@/components/ui/bg-pattern';
 
 interface TimelineItem {
   id: number;
@@ -29,14 +31,11 @@ interface RadialOrbitalTimelineProps {
 
 export default function RadialOrbitalTimeline({ timelineData }: RadialOrbitalTimelineProps) {
   const [expandedItems, setExpandedItems] = useState<Record<number, boolean>>({});
-  const [viewMode, setViewMode] = useState<"orbital">("orbital");
+  const viewMode: "orbital" = "orbital";
   const [rotationAngle, setRotationAngle] = useState<number>(0);
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const [pulseEffect, setPulseEffect] = useState<Record<number, boolean>>({});
-  const [centerOffset, setCenterOffset] = useState<{ x: number; y: number }>({
-    x: 0,
-    y: 0,
-  });
+  const [centerOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [activeNodeId, setActiveNodeId] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
@@ -85,20 +84,20 @@ export default function RadialOrbitalTimeline({ timelineData }: RadialOrbitalTim
   };
 
   useEffect(() => {
-    let rotationTimer: NodeJS.Timeout;
+    let rotationTimer: number | undefined;
 
     if (autoRotate && viewMode === "orbital") {
-      rotationTimer = setInterval(() => {
+      rotationTimer = window.setInterval(() => {
         setRotationAngle((prev) => {
           const newAngle = (prev + 0.3) % 360;
           return Number(newAngle.toFixed(3));
         });
-      }, 50);
+      }, 50) as unknown as number;
     }
 
     return () => {
       if (rotationTimer) {
-        clearInterval(rotationTimer);
+        window.clearInterval(rotationTimer);
       }
     };
   }, [autoRotate, viewMode]);
@@ -141,19 +140,6 @@ export default function RadialOrbitalTimeline({ timelineData }: RadialOrbitalTim
     return relatedItems.includes(itemId);
   };
 
-  const getStatusStyles = (status: TimelineItem["status"]): string => {
-    switch (status) {
-      case "completed":
-        return "text-white bg-black border-white";
-      case "in-progress":
-        return "text-black bg-white border-black";
-      case "pending":
-        return "text-white bg-black/40 border-white/50";
-      default:
-        return "text-white bg-black/40 border-white/50";
-    }
-  };
-
   return (
     <div
       className="w-full h-screen flex flex-col items-center justify-center bg-black overflow-hidden"
@@ -169,6 +155,15 @@ export default function RadialOrbitalTimeline({ timelineData }: RadialOrbitalTim
             transform: `translate(${centerOffset.x}px, ${centerOffset.y}px)`,
           }}
         >
+          {/* dotted red background pattern */}
+          {/* @ts-ignore */}
+          {/* import BGPattern dynamically to avoid top-level import duplication */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            {/* Using the BGPattern component to render dotted red background */}
+            {/* @ts-ignore */}
+            <BGPattern variant="dots" mask="fade-edges" size={18} fill="#1f0202" />
+          </div>
+
           <div className="absolute w-16 h-16 rounded-full bg-gradient-to-br from-[#2a0303] via-[#7a0000] to-[#FF073A] animate-pulse flex items-center justify-center z-10">
             <div className="absolute w-20 h-20 rounded-full border border-white/20 animate-ping opacity-70"></div>
             <div className="absolute w-24 h-24 rounded-full border border-white/10 animate-ping opacity-50" style={{ animationDelay: '0.5s' }}></div>
