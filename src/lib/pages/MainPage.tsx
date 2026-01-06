@@ -5,7 +5,7 @@ import '../../App.css'
 // @ts-ignore
 import TextType from '../../components/TextType'
 import RadialOrbitalTimeline from '../../components/dashboard/radial-orbital-timeline'
-import { Calendar, Code, FileText, User, Clock } from 'lucide-react'
+import { Info, FileText, Play, Users } from 'lucide-react'
 
 export default function MainPage() {
   // no navigation needed in this file
@@ -13,58 +13,35 @@ export default function MainPage() {
   const timelineData = [
     {
       id: 1,
-      title: 'Planning',
-      date: 'Jan 2024',
-      content: 'Project planning and requirements gathering phase.',
-      category: 'Planning',
-      icon: Calendar,
+      title: 'About Us',
+      date: '',
+      content: 'We are passionate developers building modern multiplayer gaming experiences with cutting-edge web technologies.',
+      icon: Info,
       relatedIds: [2],
-      status: 'completed' as const,
-      energy: 100,
     },
     {
       id: 2,
-      title: 'Design',
-      date: 'Feb 2024',
-      content: 'UI/UX design and system architecture.',
-      category: 'Design',
+      title: 'Project',
+      date: '',
+      content: 'A real-time multiplayer Tetris game featuring neon aesthetics, competitive gameplay, and seamless online battles.',
       icon: FileText,
-      relatedIds: [1, 3],
-      status: 'completed' as const,
-      energy: 90,
+      relatedIds: [1, 3, 4],
     },
     {
       id: 3,
-      title: 'Development',
-      date: 'Mar 2024',
-      content: 'Core features implementation and testing.',
-      category: 'Development',
-      icon: Code,
+      title: 'Single Player',
+      date: '',
+      content: 'Hone your skills with AI opponents and take on daily challenges to master the mechanics.',
+      icon: Play,
       relatedIds: [2, 4],
-      status: 'in-progress' as const,
-      energy: 60,
     },
     {
       id: 4,
-      title: 'Testing',
-      date: 'Apr 2024',
-      content: 'User testing and bug fixes.',
-      category: 'Testing',
-      icon: User,
-      relatedIds: [3, 5],
-      status: 'pending' as const,
-      energy: 30,
-    },
-    {
-      id: 5,
-      title: 'Release',
-      date: 'May 2024',
-      content: 'Final deployment and release.',
-      category: 'Release',
-      icon: Clock,
-      relatedIds: [4],
-      status: 'pending' as const,
-      energy: 10,
+      title: 'Multiplayer',
+      date: '',
+      content: 'Create rooms, invite friends, and compete in real-time multiplayer matches. Last one standing wins!',
+      icon: Users,
+      relatedIds: [2, 3],
     },
   ];
 

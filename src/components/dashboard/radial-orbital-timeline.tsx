@@ -1,9 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowRight, Link, Zap } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Info, FileText, Play, Users } from "lucide-react";
 import RadialOrbitalTimelineItem from "./RadialOrbitalTimelineItem";
 import RadialOrbitalTimelineCard from "./RadialOrbitalTimelineCard";
 // @ts-ignore
@@ -14,11 +11,11 @@ interface TimelineItem {
   title: string;
   date: string;
   content: string;
-  category: string;
-  icon: React.ElementType;
+  category?: string;
+  icon?: React.ElementType;
   relatedIds: number[];
-  status: "completed" | "in-progress" | "pending";
-  energy: number;
+  status?: "completed" | "in-progress" | "pending";
+  energy?: number;
   _posX?: number;
   _posY?: number;
   _zIndex?: number;
@@ -155,13 +152,9 @@ export default function RadialOrbitalTimeline({ timelineData }: RadialOrbitalTim
             transform: `translate(${centerOffset.x}px, ${centerOffset.y}px)`,
           }}
         >
-          {/* dotted red background pattern */}
-          {/* @ts-ignore */}
-          {/* import BGPattern dynamically to avoid top-level import duplication */}
-          <div className="absolute inset-0 z-0 pointer-events-none">
-            {/* Using the BGPattern component to render dotted red background */}
-            {/* @ts-ignore */}
-            <BGPattern variant="dots" mask="fade-edges" size={18} fill="#1f0202" />
+          {/* dotted red background pattern - full coverage without mask */}
+          <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+            <BGPattern variant="dots" mask="none" size={16} fill="#2a0505" />
           </div>
 
           <div className="absolute w-16 h-16 rounded-full bg-gradient-to-br from-[#2a0303] via-[#7a0000] to-[#FF073A] animate-pulse flex items-center justify-center z-10">
@@ -199,8 +192,8 @@ export default function RadialOrbitalTimeline({ timelineData }: RadialOrbitalTim
                 {isExpanded && (
                   <RadialOrbitalTimelineCard
                     item={item}
+                    timelineData={timelineData}
                     onToggleRelated={(relatedId: number) => {
-                      // stop propagation handled in card's button; toggle the related node
                       toggleItem(relatedId);
                     }}
                   />
@@ -212,4 +205,44 @@ export default function RadialOrbitalTimeline({ timelineData }: RadialOrbitalTim
       </div>
     </div>
   );
+}
+
+// Demo export with 4 nodes as requested
+export function RadialOrbitalTimelineDemo() {
+  const demoData: TimelineItem[] = [
+    {
+      id: 1,
+      title: 'About Us',
+      date: '',
+      content: 'We are passionate developers building modern multiplayer gaming experiences with cutting-edge web technologies.',
+      icon: Info,
+      relatedIds: [2],
+    },
+    {
+      id: 2,
+      title: 'Project',
+      date: '',
+      content: 'A real-time multiplayer Tetris game featuring neon aesthetics, competitive gameplay, and seamless online battles.',
+      icon: FileText,
+      relatedIds: [1, 3, 4],
+    },
+    {
+      id: 3,
+      title: 'Single Player',
+      date: '',
+      content: 'Hone your skills with AI opponents and take on daily challenges to master the mechanics.',
+      icon: Play,
+      relatedIds: [2, 4],
+    },
+    {
+      id: 4,
+      title: 'Multiplayer',
+      date: '',
+      content: 'Create rooms, invite friends, and compete in real-time multiplayer matches. Last one standing wins!',
+      icon: Users,
+      relatedIds: [2, 3],
+    },
+  ];
+
+  return <RadialOrbitalTimeline timelineData={demoData} />;
 }
