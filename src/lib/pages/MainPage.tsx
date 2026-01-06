@@ -6,6 +6,8 @@ import '../../App.css'
 import TextType from '../../components/TextType'
 import RadialOrbitalTimeline from '../../components/dashboard/radial-orbital-timeline'
 import { Info, FileText, Play, Users } from 'lucide-react'
+// @ts-ignore
+import { BGPattern } from '@/components/ui/bg-pattern'
 
 export default function MainPage() {
   // no navigation needed in this file
@@ -74,7 +76,12 @@ export default function MainPage() {
       </section>
 
       <section className="timeline-section timeline-bg-dark">
-        <div className="container mx-auto py-12">
+        {/* Dotted red background pattern for entire timeline section */}
+        <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+          <BGPattern variant="dots" mask="none" size={16} fill="#2a0505" />
+        </div>
+        
+        <div className="container mx-auto py-12 relative z-10">
           <RadialOrbitalTimeline timelineData={timelineData} />
         </div>
       </section>

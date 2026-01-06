@@ -166,3 +166,15 @@ html.lenis, html.lenis body {
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
 }
+
+.timeline-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #000;
+  overflow: hidden;
+}
+
+.timeline-bg-dark {
+  background-color: #000;
+}

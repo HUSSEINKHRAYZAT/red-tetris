@@ -152,10 +152,7 @@ export default function RadialOrbitalTimeline({ timelineData }: RadialOrbitalTim
             transform: `translate(${centerOffset.x}px, ${centerOffset.y}px)`,
           }}
         >
-          {/* dotted red background pattern - full coverage without mask */}
-          <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
-            <BGPattern variant="dots" mask="none" size={16} fill="#2a0505" />
-          </div>
+          {/* dotted red background pattern removed - now handled by parent section */}
 
           <div className="absolute w-16 h-16 rounded-full bg-gradient-to-br from-[#2a0303] via-[#7a0000] to-[#FF073A] animate-pulse flex items-center justify-center z-10">
             <div className="absolute w-20 h-20 rounded-full border border-white/20 animate-ping opacity-70"></div>
@@ -192,10 +189,6 @@ export default function RadialOrbitalTimeline({ timelineData }: RadialOrbitalTim
                 {isExpanded && (
                   <RadialOrbitalTimelineCard
                     item={item}
-                    timelineData={timelineData}
-                    onToggleRelated={(relatedId: number) => {
-                      toggleItem(relatedId);
-                    }}
                   />
                 )}
               </div>

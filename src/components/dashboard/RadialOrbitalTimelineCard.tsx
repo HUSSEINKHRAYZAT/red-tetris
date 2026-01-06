@@ -1,15 +1,12 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Link } from 'lucide-react'
 
 interface RadialOrbitalTimelineCardProps {
   item: any;
-  timelineData?: any[];
-  onToggleRelated: (id: number) => void;
 }
 
-export default function RadialOrbitalTimelineCard({ item, timelineData, onToggleRelated }: RadialOrbitalTimelineCardProps) {
+export default function RadialOrbitalTimelineCard({ item }: RadialOrbitalTimelineCardProps) {
   const isSingleOrMultiplayer = item.title?.toLowerCase().includes('single') || item.title?.toLowerCase().includes('multiplayer');
 
   return (
@@ -20,34 +17,6 @@ export default function RadialOrbitalTimelineCard({ item, timelineData, onToggle
       </CardHeader>
       <CardContent className="text-sm text-white/80">
         <p className="mb-4">{item.content}</p>
-
-        {item.relatedIds && item.relatedIds.length > 0 && (
-          <div className="mt-3 pt-3 border-t border-white/10">
-            <div className="flex items-center mb-2">
-              <Link size={12} className="text-white/70 mr-2" />
-              <h4 className="text-xs uppercase tracking-wider font-medium text-white/70">Related</h4>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {item.relatedIds.map((relatedId: number) => {
-                const relatedItem = timelineData?.find((i: any) => i.id === relatedId);
-                return (
-                  <Button
-                    key={relatedId}
-                    variant="outline"
-                    size="sm"
-                    className="h-7 px-3 py-0 text-xs border-white/20 bg-transparent hover:bg-white/10 text-white/80 hover:text-white transition-all"
-                    onClick={(e: React.MouseEvent) => {
-                      e.stopPropagation();
-                      onToggleRelated(relatedId);
-                    }}
-                  >
-                    {relatedItem?.title || `Node ${relatedId}`}
-                  </Button>
-                )
-              })}
-            </div>
-          </div>
-        )}
 
         {isSingleOrMultiplayer && (
           <div className="mt-4 pt-3 border-t border-white/10 flex justify-end">
