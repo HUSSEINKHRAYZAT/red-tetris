@@ -1,3 +1,11 @@
+:root {
+  --font-heading: 'Croissant One', cursive;
+}
+
+body {
+  font-family: var(--font-heading);
+}
+
 #root {
   width: 100%;
   margin: 0;
@@ -95,6 +103,8 @@
   line-height: 1.6;
   text-shadow: 0 0 10px rgba(255,7,58,0.04);
   padding: 0 1rem;
+  /* ensure subtitle uses same display font as title */
+  font-family: var(--font-heading) !important;
 }
 
 .benefits-section {
