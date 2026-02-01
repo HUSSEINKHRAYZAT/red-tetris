@@ -4,8 +4,9 @@
 @tailwind utilities;
 
 :root {
-  /* Use Croissant One as the primary UI and heading font so titles and body match */
-  font-family: 'Croissant One', cursive;
+  /* Titles: UnifrakturMaguntia, Body: Share Tech Mono, fallback to Inter */
+  --font-heading: 'UnifrakturMaguntia', cursive;
+  --font-sans: 'Share Tech Mono', monospace;
   line-height: 1.5;
   font-weight: 400;
 
@@ -17,9 +18,6 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  --font-sans: 'Croissant One', cursive;
-  --font-heading: 'Croissant One', cursive;
 }
 
 html, body, #root {
@@ -44,9 +42,8 @@ body {
   font-family: var(--font-sans);
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+h1, h2, h3, .jumbotron__title, .font-display {
+  font-family: var(--font-heading);
 }
 
 button {
@@ -212,4 +209,19 @@ button:focus-visible {
 /* Ensure the timeline background matches the GridScan darkest point (near-black red) */
 .timeline-bg-dark {
   background: radial-gradient(circle at center, #050101 0%, #040000 40%, #000000 100%);
+}
+
+/* Force the requested fonts to ensure they load and override other rules */
+html, body, #root {
+  font-family: 'Share Tech Mono', monospace; /* body font */
+}
+
+h1, h2, h3, h4, h5, h6, .jumbotron__title, .font-display, .title {
+  font-family: 'UnifrakturMaguntia', cursive; /* headings */
+}
+
+/* Ensure elements using --font-heading or --font-sans pick the expected fonts */
+:root {
+  --font-heading: 'UnifrakturMaguntia', cursive;
+  --font-sans: 'Share Tech Mono', monospace;
 }

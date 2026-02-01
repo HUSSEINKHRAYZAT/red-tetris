@@ -1,6 +1,6 @@
-import GridScan from '../../components/dashboard/grid-scan'
-import TextType from '../../components/dashboard/text-type'
-import RadialOrbitalTimeline, { RadialOrbitalTimelineDemo } from '../../components/dashboard/radial-orbital-timeline'
+import GridScan from '../components/GridScan.css'
+import TextType from '../components/TextType.css'
+import RadialOrbitalTimeline, { RadialOrbitalTimelineDemo } from '../components/dashboard/radial-orbital-timeline'
 
 export default function MainPage() {
   // no navigation needed in this file
@@ -13,7 +13,7 @@ export default function MainPage() {
           <TextType
             as="h1"
             text="Red Tetris"
-            className="jumbotron__title"
+            className="jumbotron__title font-display"
             showCursor={true}
             typingSpeed={50}
             loop={false}
