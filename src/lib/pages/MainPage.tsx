@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
 // @ts-ignore
-import { GridScan } from '../../components/GridScan'
-import AboutSection from '../../components/AboutSection'
-import TeamSection from '../../components/TeamSection'
-import ActionSection from '../../components/ActionSection'
-import '../../App.css'
-import { motion } from 'framer-motion'
+import { GridScan } from "../../components/GridScan";
+import AboutSection from "../../components/AboutSection";
+import TeamSection from "../../components/TeamSection";
+import ActionSection from "../../components/ActionSection";
+import "../../App.css";
+import { motion } from "framer-motion";
 
 export default function MainPage() {
   return (
@@ -19,7 +19,7 @@ export default function MainPage() {
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
-            transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
           >
             Red Tetris
           </motion.h1>
@@ -29,9 +29,10 @@ export default function MainPage() {
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
-            transition={{ duration: 0.8, delay: 0.9, ease: 'easeOut' }}
+            transition={{ duration: 0.8, delay: 0.9, ease: "easeOut" }}
           >
-            Battle with falling blocks in real-time multiplayer Tetris. Create a room, challenge friends, and be the last one standing!
+            Real-time multiplayer Tetris battle. Stack smart, clear lines, and
+            crush your opponents with strategic penalties!
           </motion.p>
         </div>
       </section>
@@ -40,5 +41,5 @@ export default function MainPage() {
       <TeamSection />
       <ActionSection />
     </main>
-  )
+  );
 }

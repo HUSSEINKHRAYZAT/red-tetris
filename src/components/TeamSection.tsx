@@ -1,17 +1,19 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 
 const teamMembers = [
   {
     name: "Hussein Khrayzat",
     role: "Backend Architect",
-    description: "Full-stack wizard focused on server scalability and low-latency netcode."
+    description:
+      "I developed the game server using Express.js\nwith pure WebSocket communication—no REST APIs.\nThe server manages game rooms, synchronizes pieces,\nand broadcasts penalties in real-time\nto all connected players.",
   },
   {
     name: "Ali Fayad",
     role: "Frontend Engineer",
-    description: "Pixel-perfect styling and React performance optimization specialist."
-  }
+    description:
+      "I built the responsive, real-time game interface\nusing React with TypeScript and styled it\nwith a custom red-dark theme in Tailwind CSS.\nThe frontend communicates seamlessly via\nWebSocket to deliver live multiplayer action.",
+  },
 ];
 
 export default function TeamSection() {
@@ -23,7 +25,10 @@ export default function TeamSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false }}
         transition={{ duration: 0.6 }}
-        style={{ textShadow: '0 0 10px rgba(255, 26, 26, 0.7), 0 0 20px rgba(255, 26, 26, 0.5)' }}
+        style={{
+          textShadow:
+            "0 0 10px rgba(255, 26, 26, 0.7), 0 0 20px rgba(255, 26, 26, 0.5)",
+        }}
       >
         The Team
       </motion.h2>
@@ -40,8 +45,12 @@ export default function TeamSection() {
           >
             <div className="flex items-center space-x-6">
               <div>
-                <h3 className="font-display text-3xl text-white">{member.name}</h3>
-                <p className="font-mono text-primary text-base uppercase tracking-wide mt-1">{member.role}</p>
+                <h3 className="font-display text-3xl text-white">
+                  {member.name}
+                </h3>
+                <p className="font-mono text-primary text-base uppercase tracking-wide mt-1">
+                  {member.role}
+                </p>
               </div>
             </div>
             <p className="mt-6 font-sans text-gray-400 text-base leading-relaxed">
