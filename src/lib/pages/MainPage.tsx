@@ -32,7 +32,11 @@ export default function MainPage() {
             Battle with falling blocks in real-time multiplayer Tetris. Create a room, challenge friends, and be the last one standing!
           </motion.p>
         </div>
-        <ScrollDownButton />
+        <div className="absolute inset-x-0 bottom-8 flex justify-center z-50 pointer-events-none">
+          <div className="pointer-events-auto">
+            <ScrollDownButton />
+          </div>
+        </div>
       </section>
 
       <AboutSection />

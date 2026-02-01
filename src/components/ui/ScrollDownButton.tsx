@@ -26,8 +26,7 @@ export default function ScrollDownButton() {
     <motion.button
       aria-label="Scroll down"
       onClick={scrollToNext}
-      className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-black/50 hover:bg-primary/30 text-white p-4 rounded-full border-2 border-primary shadow-[0_0_20px_rgba(255,7,58,0.5)] hover:shadow-[0_0_30px_rgba(255,7,58,0.8)] transition-all cursor-pointer pointer-events-auto"
-      style={{ zIndex: 9999 }}
+      className="bg-black/50 hover:bg-primary/30 text-white p-4 rounded-full border-2 border-primary shadow-[0_0_20px_rgba(255,7,58,0.5)] hover:shadow-[0_0_30px_rgba(255,7,58,0.8)] transition-all cursor-pointer pointer-events-auto"
       initial={{ opacity: 0, y: 0 }}
       animate={{ opacity: 1, y: [0, 8, 0] }}
       transition={{ opacity: { delay: 1.7, duration: 0.2 }, y: { delay: 1.7, duration: 1.2, repeat: Infinity, repeatType: 'loop', ease: 'easeInOut' } }}
