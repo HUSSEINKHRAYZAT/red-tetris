@@ -1,16 +1,19 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { GITHUB_PROFILES } from "../lib/static";
 
 const teamMembers = [
   {
     name: "Hussein Khrayzat",
     role: "Backend Architect",
+    github: GITHUB_PROFILES.BACKEND,
     description:
       "I developed the game server using Express.js\nwith pure WebSocket communication—no REST APIs.\nThe server manages game rooms, synchronizes pieces,\nand broadcasts penalties in real-time\nto all connected players.",
   },
   {
     name: "Ali Fayad",
     role: "Frontend Engineer",
+    github: GITHUB_PROFILES.FRONTEND,
     description:
       "I built the responsive, real-time game interface\nusing React with TypeScript and styled it\nwith a custom red-dark theme in Tailwind CSS.\nThe frontend communicates seamlessly via\nWebSocket to deliver live multiplayer action.",
   },
@@ -51,6 +54,14 @@ export default function TeamSection() {
                 <p className="font-mono text-primary text-base uppercase tracking-wide mt-1">
                   {member.role}
                 </p>
+                <a
+                  href={member.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-block font-mono text-[#7CFF9E] hover:underline"
+                >
+                  GitHub Profile
+                </a>
               </div>
             </div>
             <p className="mt-6 font-sans text-gray-400 text-base leading-relaxed">
