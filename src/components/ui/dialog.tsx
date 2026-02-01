@@ -1,6 +1,6 @@
 import * as React from "react"
-// icon removed; not used since corner close button was removed
 import * as DialogPrimitive from "@radix-ui/react-dialog"
+import { motion } from "framer-motion"
 
 import { cn } from "@/lib/utils"
 
@@ -41,8 +41,14 @@ const DialogContent = React.forwardRef<
       )}
       {...props}
     >
-      {children}
-      {/* Removed the corner X close button so dialog is only dismissable via overlay or explicit footer controls */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98, y: -8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.98, y: -8 }}
+        transition={{ duration: 0.18 }}
+      >
+        {children}
+      </motion.div>
     </DialogPrimitive.Content>
   </DialogPortal>
 ))
