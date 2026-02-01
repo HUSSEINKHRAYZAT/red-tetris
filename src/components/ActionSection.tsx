@@ -1,8 +1,33 @@
-import React from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, Users } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from './ui/dialog'
 
 export default function ActionSection() {
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [mode, setMode] = useState<'single' | 'multi' | null>(null)
+  const [playerName, setPlayerName] = useState('')
+
+  function openFor(m: 'single' | 'multi') {
+    setMode(m)
+    setPlayerName('')
+    setDialogOpen(true)
+  }
+
+  function handleConfirm() {
+    // placeholder: replace with real flow (start game / create room etc.)
+    console.log('Mode:', mode, 'Player name:', playerName)
+    setDialogOpen(false)
+  }
+
   return (
     <section className="w-full pb-24 px-4 md:px-8 max-w-6xl mx-auto">
       <motion.div
@@ -19,7 +44,7 @@ export default function ActionSection() {
 
         <div className="relative z-10 flex flex-col md:flex-row justify-center items-stretch gap-8 max-w-4xl mx-auto">
           {/* Singleplayer Button */}
-          <button className="flex-1 group relative overflow-hidden bg-gray-800 rounded-lg p-8 border-2 border-gray-600 hover:border-primary transition-all duration-300 text-left md:text-center cursor-pointer">
+          <button onClick={() => openFor('single')} className="flex-1 group relative overflow-hidden bg-gray-800 rounded-lg p-8 border-2 border-gray-600 hover:border-primary transition-all duration-300 text-left md:text-center cursor-pointer">
             <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors duration-300"></div>
             <div className="relative z-10 flex flex-col items-center">
               <User className="w-16 h-16 text-gray-500 group-hover:text-primary transition-colors duration-300 mb-4" />
@@ -30,7 +55,7 @@ export default function ActionSection() {
           </button>
 
           {/* Multiplayer Button */}
-          <button className="flex-1 group relative overflow-hidden bg-primary rounded-lg p-8 border-2 border-red-400 shadow-[0_0_15px_rgba(255,26,26,0.5)] hover:shadow-[0_0_25px_rgba(255,26,26,0.8)] transition-all duration-300 transform hover:-translate-y-1 text-left md:text-center cursor-pointer">
+          <button onClick={() => openFor('multi')} className="flex-1 group relative overflow-hidden bg-primary rounded-lg p-8 border-2 border-red-400 shadow-[0_0_15px_rgba(255,26,26,0.5)] hover:shadow-[0_0_25px_rgba(255,26,26,0.8)] transition-all duration-300 transform hover:-translate-y-1 text-left md:text-center cursor-pointer">
             <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300"></div>
             <div className="relative z-10 flex flex-col items-center">
               <Users className="w-16 h-16 text-white mb-4 animate-pulse" />
@@ -50,6 +75,30 @@ export default function ActionSection() {
             `}</style>
           </button>
         </div>
+
+        {/* Dialog for name input */}
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{mode === 'single' ? 'Enter name for Singleplayer' : 'Enter name for Multiplayer'}</DialogTitle>
+              <DialogDescription>Please provide the player name to continue.</DialogDescription>
+            </DialogHeader>
+
+            <input
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+              placeholder="Your name"
+              className="w-full mt-2 p-3 rounded bg-[#0b0b0b] border border-gray-800 text-white"
+            />
+
+            <DialogFooter>
+              <DialogClose asChild>
+                <button className="px-4 py-2 bg-transparent border border-gray-700 rounded text-white">Cancel</button>
+              </DialogClose>
+              <button onClick={handleConfirm} className="px-4 py-2 bg-primary text-black font-bold rounded">Confirm</button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </motion.div>
     </section>
   );
