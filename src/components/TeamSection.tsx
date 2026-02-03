@@ -1,23 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { GITHUB_PROFILES } from "../lib/static";
-
-const teamMembers = [
-  {
-    name: "Hussein Khrayzat",
-    role: "Backend Architect",
-    github: GITHUB_PROFILES.BACKEND,
-    description:
-      "I developed the game server using Express.js\nwith pure WebSocket communication—no REST APIs.\nThe server manages game rooms, synchronizes pieces,\nand broadcasts penalties in real-time\nto all connected players.",
-  },
-  {
-    name: "Ali Fayad",
-    role: "Frontend Engineer",
-    github: GITHUB_PROFILES.FRONTEND,
-    description:
-      "I built the responsive, real-time game interface\nusing React with TypeScript and styled it\nwith a custom red-dark theme in Tailwind CSS.\nThe frontend communicates seamlessly via\nWebSocket to deliver live multiplayer action.",
-  },
-];
+import { TEAM_SECTION } from "../lib/static";
 
 export default function TeamSection() {
   return (
@@ -33,10 +16,10 @@ export default function TeamSection() {
             "0 0 10px rgba(255, 26, 26, 0.7), 0 0 20px rgba(255, 26, 26, 0.5)",
         }}
       >
-        The Team
+        {TEAM_SECTION.TITLE}
       </motion.h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
-        {teamMembers.map((member, index) => (
+        {TEAM_SECTION.MEMBERS.map((member, index) => (
           <motion.div
             key={index}
             className="group bg-[#0f0f0f] border-l-4 border-primary p-8 shadow-lg hover:shadow-[0_0_15px_rgba(255,26,26,0.5)] transition-all duration-300 transform rounded-r-lg"
@@ -60,7 +43,7 @@ export default function TeamSection() {
                   rel="noopener noreferrer"
                   className="mt-2 inline-block font-mono text-[#7CFF9E] hover:underline"
                 >
-                  GitHub Profile
+                  {TEAM_SECTION.GITHUB_LINK_TEXT}
                 </a>
               </div>
             </div>

@@ -10,6 +10,7 @@ import {
   DialogFooter,
   DialogClose,
 } from './ui/dialog'
+import { ACTION_SECTION } from '../lib/static';
 
 export default function ActionSection() {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -39,7 +40,7 @@ export default function ActionSection() {
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-50"></div>
         <h2 className="relative z-10 text-4xl md:text-6xl font-display text-white text-center mb-12 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-          Ready to Drop?
+          {ACTION_SECTION.TITLE}
         </h2>
 
         <div className="relative z-10 flex flex-col md:flex-row justify-center items-stretch gap-8 max-w-4xl mx-auto">
@@ -48,8 +49,8 @@ export default function ActionSection() {
             <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors duration-300"></div>
             <div className="relative z-10 flex flex-col items-center">
               <User className="w-16 h-16 text-gray-500 group-hover:text-primary transition-colors duration-300 mb-4" />
-              <h3 className="text-2xl font-mono text-white group-hover:text-primary transition-colors font-bold uppercase tracking-widest">Singleplayer</h3>
-              <p className="text-sm text-gray-400 mt-2 font-mono group-hover:text-gray-200">Practice your stacking skills</p>
+              <h3 className="text-2xl font-mono text-white group-hover:text-primary transition-colors font-bold uppercase tracking-widest">{ACTION_SECTION.MODES.SINGLE.TITLE}</h3>
+              <p className="text-sm text-gray-400 mt-2 font-mono group-hover:text-gray-200">{ACTION_SECTION.MODES.SINGLE.DESCRIPTION}</p>
             </div>
             <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary/20 blur-xl rounded-full group-hover:scale-150 transition-transform duration-500"></div>
           </button>
@@ -59,8 +60,8 @@ export default function ActionSection() {
             <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300"></div>
             <div className="relative z-10 flex flex-col items-center">
               <Users className="w-16 h-16 text-white mb-4 animate-pulse" />
-              <h3 className="text-2xl font-mono text-white font-bold uppercase tracking-widest drop-shadow-md">Multiplayer</h3>
-              <p className="text-sm text-white/80 mt-2 font-mono font-bold">Challenge the world</p>
+              <h3 className="text-2xl font-mono text-white font-bold uppercase tracking-widest drop-shadow-md">{ACTION_SECTION.MODES.MULTI.TITLE}</h3>
+              <p className="text-sm text-white/80 mt-2 font-mono font-bold">{ACTION_SECTION.MODES.MULTI.DESCRIPTION}</p>
             </div>
             {/* Shine effect simulation */}
             <div className="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 group-hover:animate-shine"></div>
@@ -80,22 +81,22 @@ export default function ActionSection() {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{mode === 'single' ? 'Enter name for Singleplayer' : 'Enter name for Multiplayer'}</DialogTitle>
-              <DialogDescription>Please provide the player name to continue.</DialogDescription>
+              <DialogTitle>{mode === 'single' ? ACTION_SECTION.DIALOG.TITLE_SINGLE : ACTION_SECTION.DIALOG.TITLE_MULTI}</DialogTitle>
+              <DialogDescription>{ACTION_SECTION.DIALOG.DESCRIPTION}</DialogDescription>
             </DialogHeader>
 
             <input
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}
-              placeholder="Your name"
+              placeholder={ACTION_SECTION.DIALOG.PLACEHOLDER}
               className="w-full mt-2 p-3 rounded bg-[#0b0b0b] border border-gray-800 text-white"
             />
 
             <DialogFooter>
               <DialogClose asChild>
-                <button className="px-4 py-2 bg-transparent border border-gray-700 rounded text-white">Cancel</button>
+                <button className="px-4 py-2 bg-transparent border border-gray-700 rounded text-white">{ACTION_SECTION.DIALOG.CANCEL_BUTTON}</button>
               </DialogClose>
-              <button onClick={handleConfirm} className="px-4 py-2 bg-primary text-black font-bold rounded">Confirm</button>
+              <button onClick={handleConfirm} className="px-4 py-2 bg-primary text-black font-bold rounded">{ACTION_SECTION.DIALOG.CONFIRM_BUTTON}</button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

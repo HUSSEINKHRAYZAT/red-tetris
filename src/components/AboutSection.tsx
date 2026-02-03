@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
+import { ABOUT_SECTION } from "../lib/static";
 
 export default function AboutSection() {
   return (
@@ -39,32 +40,12 @@ export default function AboutSection() {
                 className="text-5xl md:text-6xl font-display text-primary mb-8 drop-shadow-sm jumbotron__title"
                 style={{ fontSize: "3.5rem" }}
               >
-                About the Project
+                {ABOUT_SECTION.TITLE}
               </h2>
               <div className="font-mono space-y-6 text-gray-300 text-xl leading-relaxed text-left md:text-center">
-                <p>
-                  Red Tetris is a modern, networked multiplayer Tetris
-                  experience built entirely with JavaScript. This project
-                  reimagines the classic puzzle game for the web era,
-                  transforming solitary block-stacking into a competitive,
-                  real-time battle. Unlike traditional Tetris, here you play
-                  against others in shared rooms where every line cleared sends
-                  indestructible penalties to opponents. Each player receives
-                  identical piece sequences, turning victory into a test of
-                  skill, strategy, and speed rather than random chance.
-                </p>
-                <p>
-                  Developed as a full-stack JavaScript implementation, Red
-                  Tetris showcases cutting-edge web technologies through
-                  functional programming, reactive UI design, and real-time
-                  communication via WebSockets. It represents both a technical
-                  demonstration and a tribute to the timeless appeal of
-                  Tetris—now enhanced for multiplayer competition. Whether
-                  practicing alone or battling friends, Red Tetris brings people
-                  together through shared challenge and classic gameplay,
-                  proving that some games only get better when you're not
-                  playing alone.
-                </p>
+                {ABOUT_SECTION.PARAGRAPHS.map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
               </div>
             </motion.div>
           </div>

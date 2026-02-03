@@ -7,6 +7,7 @@ import ActionSection from '../../components/ActionSection'
 import '../../App.css'
 import { motion } from 'framer-motion'
 import ScrollDownButton from '../../components/ui/ScrollDownButton'
+import { LANDING_PAGE } from '../static'
 
 export default function MainPage() {
   return (
@@ -20,7 +21,7 @@ export default function MainPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
           >
-            Red Tetris
+            {LANDING_PAGE.TITLE}
           </motion.h1>
 
           <motion.p
@@ -29,7 +30,7 @@ export default function MainPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.9, ease: 'easeOut' }}
           >
-            Battle with falling blocks in real-time multiplayer Tetris. Create a room, challenge friends, and be the last one standing!
+            {LANDING_PAGE.SUBTITLE}
           </motion.p>
         </div>
         <div className="absolute inset-x-0 bottom-8 flex justify-center z-50 pointer-events-none">
