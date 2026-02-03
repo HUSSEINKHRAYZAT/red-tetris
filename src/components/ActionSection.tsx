@@ -1,32 +1,97 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { User, Users } from 'lucide-react';
+import { Users } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
   DialogClose,
 } from './ui/dialog'
 import { ACTION_SECTION } from '../lib/static';
+import { socketStorage } from '../lib/socket/storage'
 
 export default function ActionSection() {
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [mode, setMode] = useState<'single' | 'multi' | null>(null)
-  const [playerName, setPlayerName] = useState('')
+  const [playerName, setPlayerName] = useState(socketStorage.getPlayerName() ?? '')
+  const [roomId, setRoomId] = useState('')
+  const [isClosing, setIsClosing] = useState(false)
+  const closeTimerRef = useRef<number | null>(null)
 
-  function openFor(m: 'single' | 'multi') {
-    setMode(m)
-    setPlayerName('')
+  function openDialog() {
+    setPlayerName(socketStorage.getPlayerName() ?? '')
+    setRoomId('')
+    // ensure any previous closing animation is cleared
+    if (closeTimerRef.current) {
+      window.clearTimeout(closeTimerRef.current)
+      closeTimerRef.current = null
+      setIsClosing(false)
+    }
     setDialogOpen(true)
   }
 
-  function handleConfirm() {
-    // placeholder: replace with real flow (start game / create room etc.)
-    console.log('Mode:', mode, 'Player name:', playerName)
+  // Intercept dialog open changes to run a close animation before actually closing
+  function handleDialogOpenChange(next: boolean) {
+    if (!next) {
+      // start closing animation and delay unmount
+      setIsClosing(true)
+      // duration must match motion transition below (250ms)
+      closeTimerRef.current = window.setTimeout(() => {
+        setIsClosing(false)
+        setDialogOpen(false)
+        closeTimerRef.current = null
+      }, 250)
+    } else {
+      // opening immediately
+      setDialogOpen(true)
+    }
+  }
+
+  // cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) {
+        window.clearTimeout(closeTimerRef.current)
+      }
+    }
+  }, [])
+
+  function handlePlaySolo() {
+    if (!playerName || playerName.trim() === '') {
+      alert('Please enter a player name')
+      return
+    }
+
+    socketStorage.setPlayerName(playerName.trim())
+    socketStorage.clearCurrentRoom()
+
+    console.log('Start singleplayer as', playerName.trim())
     setDialogOpen(false)
+  }
+
+  function handleJoinOrCreateRoom() {
+    if (!playerName || playerName.trim() === '') {
+      alert('Please enter a player name')
+      return
+    }
+
+    if (!roomId || roomId.trim() === '') {
+      alert('Please enter or generate a room id')
+      return
+    }
+
+    const room = roomId.trim()
+    socketStorage.setPlayerName(playerName.trim())
+    socketStorage.setCurrentRoom(room)
+
+    console.log('Join/Create room', room, 'as', playerName.trim())
+    setDialogOpen(false)
+  }
+
+  function handleGenerateRoom() {
+    const id = Math.random().toString(36).slice(2, 8).toUpperCase()
+    setRoomId(id)
   }
 
   return (
@@ -43,61 +108,65 @@ export default function ActionSection() {
           {ACTION_SECTION.TITLE}
         </h2>
 
-        <div className="relative z-10 flex flex-col md:flex-row justify-center items-stretch gap-8 max-w-4xl mx-auto">
-          {/* Singleplayer Button */}
-          <button onClick={() => openFor('single')} className="flex-1 group relative overflow-hidden bg-gray-800 rounded-lg p-8 border-2 border-gray-600 hover:border-primary transition-all duration-300 text-left md:text-center cursor-pointer">
-            <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors duration-300"></div>
+        <div className="relative z-10 flex justify-center">
+          <button onClick={openDialog} className="w-full md:w-1/3 group relative overflow-hidden bg-primary rounded-lg p-6 border-2 border-red-400 shadow-[0_0_15px_rgba(255,26,26,0.5)] hover:shadow-[0_0_25px_rgba(255,26,26,0.8)] transition-all duration-300 text-center cursor-pointer">
             <div className="relative z-10 flex flex-col items-center">
-              <User className="w-16 h-16 text-gray-500 group-hover:text-primary transition-colors duration-300 mb-4" />
-              <h3 className="text-2xl font-mono text-white group-hover:text-primary transition-colors font-bold uppercase tracking-widest">{ACTION_SECTION.MODES.SINGLE.TITLE}</h3>
-              <p className="text-sm text-gray-400 mt-2 font-mono group-hover:text-gray-200">{ACTION_SECTION.MODES.SINGLE.DESCRIPTION}</p>
+              <Users className="w-12 h-12 text-white mb-2 animate-pulse" />
+              <h3 className="text-xl font-mono text-white font-bold uppercase tracking-widest drop-shadow-md">Play</h3>
             </div>
-            <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary/20 blur-xl rounded-full group-hover:scale-150 transition-transform duration-500"></div>
-          </button>
-
-          {/* Multiplayer Button */}
-          <button onClick={() => openFor('multi')} className="flex-1 group relative overflow-hidden bg-primary rounded-lg p-8 border-2 border-red-400 shadow-[0_0_15px_rgba(255,26,26,0.5)] hover:shadow-[0_0_25px_rgba(255,26,26,0.8)] transition-all duration-300 transform hover:-translate-y-1 text-left md:text-center cursor-pointer">
-            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300"></div>
-            <div className="relative z-10 flex flex-col items-center">
-              <Users className="w-16 h-16 text-white mb-4 animate-pulse" />
-              <h3 className="text-2xl font-mono text-white font-bold uppercase tracking-widest drop-shadow-md">{ACTION_SECTION.MODES.MULTI.TITLE}</h3>
-              <p className="text-sm text-white/80 mt-2 font-mono font-bold">{ACTION_SECTION.MODES.MULTI.DESCRIPTION}</p>
-            </div>
-            {/* Shine effect simulation */}
-            <div className="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 group-hover:animate-shine"></div>
-            <style>{`
-              @keyframes shine {
-                0% { left: -100%; }
-                100% { left: 200%; }
-              }
-              .group-hover\\:animate-shine:hover {
-                animation: shine 1s;
-              }
-            `}</style>
           </button>
         </div>
 
-        {/* Dialog for name input */}
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
           <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{mode === 'single' ? ACTION_SECTION.DIALOG.TITLE_SINGLE : ACTION_SECTION.DIALOG.TITLE_MULTI}</DialogTitle>
-              <DialogDescription>{ACTION_SECTION.DIALOG.DESCRIPTION}</DialogDescription>
-            </DialogHeader>
+            {/* Wrap content in motion.div to animate close */}
+            <motion.div
+              initial={{ opacity: 1, y: 0, scale: 1 }}
+              animate={isClosing ? { opacity: 0, y: 12, scale: 0.98 } : { opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.25 }}
+            >
+              <DialogHeader>
+                <DialogTitle>{ACTION_SECTION.DIALOG.TITLE_MULTI}</DialogTitle>
+                <DialogDescription>{ACTION_SECTION.DIALOG.DESCRIPTION}</DialogDescription>
+              </DialogHeader>
 
-            <input
-              value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
-              placeholder={ACTION_SECTION.DIALOG.PLACEHOLDER}
-              className="w-full mt-2 p-3 rounded bg-[#0b0b0b] border border-gray-800 text-white"
-            />
+              <input
+                value={playerName}
+                onChange={(e) => setPlayerName(e.target.value)}
+                placeholder={ACTION_SECTION.DIALOG.PLACEHOLDER}
+                className="w-full mt-2 p-3 rounded bg-[#0b0b0b] border border-gray-800 text-white"
+              />
 
-            <DialogFooter>
-              <DialogClose asChild>
-                <button className="px-4 py-2 bg-transparent border border-gray-700 rounded text-white">{ACTION_SECTION.DIALOG.CANCEL_BUTTON}</button>
-              </DialogClose>
-              <button onClick={handleConfirm} className="px-4 py-2 bg-primary text-black font-bold rounded">{ACTION_SECTION.DIALOG.CONFIRM_BUTTON}</button>
-            </DialogFooter>
+              <div className="mt-6">
+                <button onClick={handlePlaySolo} className="w-full py-4 bg-gray-800 text-white rounded-lg text-lg font-bold">Play Solo</button>
+              </div>
+
+              <div className="flex items-center my-4 gap-4">
+                <div className="flex-1 h-px bg-gray-700" />
+                <div className="text-gray-400 uppercase text-sm">or</div>
+                <div className="flex-1 h-px bg-gray-700" />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  value={roomId}
+                  onChange={(e) => setRoomId(e.target.value)}
+                  placeholder="Enter room id"
+                  className="flex-1 p-3 rounded bg-[#0b0b0b] border border-gray-800 text-white"
+                />
+                <button onClick={handleGenerateRoom} className="px-4 py-2 bg-gray-700 text-white rounded">Generate</button>
+              </div>
+
+              <div className="mt-4">
+                <button onClick={handleJoinOrCreateRoom} className="w-full py-3 bg-primary text-black font-bold rounded-lg">Join / Create</button>
+              </div>
+
+              <div className="mt-6 flex justify-center">
+                <DialogClose asChild>
+                  <button className="px-4 py-2 bg-transparent border border-gray-700 rounded text-white">{ACTION_SECTION.DIALOG.CANCEL_BUTTON}</button>
+                </DialogClose>
+              </div>
+            </motion.div>
           </DialogContent>
         </Dialog>
       </motion.div>
