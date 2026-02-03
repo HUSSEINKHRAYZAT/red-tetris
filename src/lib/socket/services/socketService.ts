@@ -264,7 +264,7 @@ class SocketService {
    */
   onLobbyUpdate(handler: LobbyHandler): () => void {
     if (!this.socket) {
-      console.warn('[Socket] Cannot listen for LOBBY: Not connected');
+      // Silently return no-op - listeners will be registered after connection
       return () => {};
     }
 
@@ -285,7 +285,6 @@ class SocketService {
    */
   onStateUpdate(handler: StateHandler): () => void {
     if (!this.socket) {
-      console.warn('[Socket] Cannot listen for STATE: Not connected');
       return () => {};
     }
 
@@ -303,7 +302,6 @@ class SocketService {
    */
   onGameStarted(handler: GameStartedHandler): () => void {
     if (!this.socket) {
-      console.warn('[Socket] Cannot listen for GAME_STARTED: Not connected');
       return () => {};
     }
 
@@ -321,7 +319,6 @@ class SocketService {
    */
   onGameRestarted(handler: GameRestartedHandler): () => void {
     if (!this.socket) {
-      console.warn('[Socket] Cannot listen for GAME_RESTARTED: Not connected');
       return () => {};
     }
 
@@ -339,7 +336,6 @@ class SocketService {
    */
   onGameOver(handler: GameOverHandler): () => void {
     if (!this.socket) {
-      console.warn('[Socket] Cannot listen for GAME_OVER: Not connected');
       return () => {};
     }
 
@@ -358,7 +354,6 @@ class SocketService {
    */
   onError(handler: ErrorHandler): () => void {
     if (!this.socket) {
-      console.warn('[Socket] Cannot listen for ERROR: Not connected');
       return () => {};
     }
 
@@ -374,7 +369,6 @@ class SocketService {
    */
   onConnect(handler: ConnectionHandler): () => void {
     if (!this.socket) {
-      console.warn('[Socket] Cannot listen for connect: Not connected');
       return () => {};
     }
 
@@ -390,7 +384,6 @@ class SocketService {
    */
   onDisconnect(handler: ConnectionHandler): () => void {
     if (!this.socket) {
-      console.warn('[Socket] Cannot listen for disconnect: Not connected');
       return () => {};
     }
 

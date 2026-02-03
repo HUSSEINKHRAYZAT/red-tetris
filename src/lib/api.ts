@@ -12,12 +12,11 @@ const defaultPort = env.VITE_BACKEND_PORT ?? '3000';
 const envBackend = env.VITE_BACKEND_URL ?? null;
 const envSocket = env.VITE_SOCKET_URL ?? null;
 
-// If running in the browser, prefer the current origin as base. Otherwise fallback to localhost:<port>
-const locationBase = typeof window !== 'undefined' && window.location?.origin
-  ? window.location.origin
-  : `http://localhost:${defaultPort}`;
+// Default to localhost:3000 for backend in development
+// In production, use env variables or same origin
+const defaultBackend = `http://localhost:${defaultPort}`;
 
-export const BACKEND_HTTP_URL: string = envBackend ?? locationBase;
+export const BACKEND_HTTP_URL: string = envBackend ?? defaultBackend;
 export const SOCKET_URL: string = envSocket ?? BACKEND_HTTP_URL;
 
 // Optional helper that returns an object compatible with socket.io-client connect

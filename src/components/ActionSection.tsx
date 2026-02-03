@@ -12,6 +12,7 @@ import {
 import { ACTION_SECTION } from '../lib/static';
 import { socketStorage } from '../lib/utils/storage'
 import { isValidPlayerName, isValidRoomId, generateRoomId } from '../lib/utils/validation'
+import { socketService } from '../lib/socket/services/socketService'
 
 export default function ActionSection() {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -20,11 +21,48 @@ export default function ActionSection() {
   const [nameError, setNameError] = useState(false)
   const [roomError, setRoomError] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
+  const [isConnecting, setIsConnecting] = useState(false)
   const closeTimerRef = useRef<number | null>(null)
+
+  // Setup socket event listeners
+  useEffect(() => {
+    // Listen for connection events
+    const unsubConnect = socketService.onConnect(() => {
+      console.log('✅ [ActionSection] Socket connected! ID:', socketService.getSocketId())
+    })
+
+    const unsubDisconnect = socketService.onDisconnect(() => {
+      console.log('❌ [ActionSection] Socket disconnected')
+    })
+
+    // Listen for lobby updates
+    const unsubLobby = socketService.onLobbyUpdate((data) => {
+      console.log('🎮 [ActionSection] Lobby update received:', {
+        room: data.room,
+        started: data.started,
+        players: data.players,
+        playerCount: data.players.length
+      })
+    })
+
+    // Listen for errors
+    const unsubError = socketService.onError((data) => {
+      console.error('⚠️ [ActionSection] Server error:', data.message)
+    })
+
+    return () => {
+      unsubConnect()
+      unsubDisconnect()
+      unsubLobby()
+      unsubError()
+    }
+  }, [])
 
   function openDialog() {
     setPlayerName(socketStorage.getPlayerName() ?? '')
     setRoomId('')
+    setNameError(false)
+    setRoomError(false)
     // ensure any previous closing animation is cleared
     if (closeTimerRef.current) {
       window.clearTimeout(closeTimerRef.current)
@@ -44,6 +82,7 @@ export default function ActionSection() {
         setIsClosing(false)
         setDialogOpen(false)
         closeTimerRef.current = null
+        setIsConnecting(false)
       }, 250)
     } else {
       // opening immediately
@@ -60,22 +99,35 @@ export default function ActionSection() {
     }
   }, [])
 
-  function handlePlaySolo() {
+  async function handlePlaySolo() {
     const name = playerName?.trim() ?? ''
     const validName = isValidPlayerName(name)
     setNameError(!validName)
 
     if (!validName) return
 
+    setIsConnecting(true)
     socketStorage.setPlayerName(name)
     socketStorage.clearCurrentRoom()
 
-    console.log('Start singleplayer as', name)
-    // close with animation
-    handleDialogOpenChange(false)
+    try {
+      // Connect to server
+      await socketService.connect()
+      console.log('✅ [Solo] Connected to server as:', name)
+      console.log('✅ [Solo] Socket ID:', socketService.getSocketId())
+
+      // TODO: Navigate to solo game page or start solo game logic
+      console.log('🎮 [Solo] Starting singleplayer mode...')
+
+      // close with animation
+      handleDialogOpenChange(false)
+    } catch (error) {
+      console.error('❌ [Solo] Failed to connect:', error)
+      setIsConnecting(false)
+    }
   }
 
-  function handleJoinOrCreateRoom() {
+  async function handleJoinOrCreateRoom() {
     const name = playerName?.trim() ?? ''
     const room = roomId?.trim().toUpperCase() ?? ''
 
@@ -87,12 +139,30 @@ export default function ActionSection() {
 
     if (!validName || !validRoom) return
 
+    setIsConnecting(true)
     socketStorage.setPlayerName(name)
     socketStorage.setCurrentRoom(room)
 
-    console.log('Join/Create room', room, 'as', name)
-    // close with animation
-    handleDialogOpenChange(false)
+    try {
+      // Connect to server
+      await socketService.connect()
+      console.log('✅ [Multiplayer] Connected to server as:', name)
+      console.log('✅ [Multiplayer] Socket ID:', socketService.getSocketId())
+
+      // Join the room
+      socketService.joinRoom(room, name)
+      console.log('🎮 [Multiplayer] Joining room:', room)
+      console.log('👤 [Multiplayer] Player name:', name)
+      console.log('⏳ [Multiplayer] Waiting for lobby update...')
+
+      // TODO: Navigate to lobby/game page
+
+      // close with animation
+      handleDialogOpenChange(false)
+    } catch (error) {
+      console.error('❌ [Multiplayer] Failed to connect:', error)
+      setIsConnecting(false)
+    }
   }
 
   function handleGenerateRoom() {
@@ -148,7 +218,13 @@ export default function ActionSection() {
               />
 
               <div className="mt-6">
-                <button onClick={handlePlaySolo} className="w-full py-4 bg-gray-800 text-white rounded-lg text-lg font-bold">{ACTION_SECTION.DIALOG.PLAY_SOLO_BUTTON}</button>
+                <button
+                  onClick={handlePlaySolo}
+                  disabled={isConnecting}
+                  className={`w-full py-4 bg-gray-800 text-white rounded-lg text-lg font-bold ${isConnecting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  {isConnecting ? 'Connecting...' : ACTION_SECTION.DIALOG.PLAY_SOLO_BUTTON}
+                </button>
               </div>
 
               <div className="flex items-center my-4 gap-4">
@@ -174,7 +250,13 @@ export default function ActionSection() {
               </div>
 
               <div className="mt-4">
-                <button onClick={handleJoinOrCreateRoom} className="w-full py-3 bg-primary text-black font-bold rounded-lg">{ACTION_SECTION.DIALOG.JOIN_CREATE_BUTTON}</button>
+                <button
+                  onClick={handleJoinOrCreateRoom}
+                  disabled={isConnecting}
+                  className={`w-full py-3 bg-primary text-black font-bold rounded-lg ${isConnecting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  {isConnecting ? 'Connecting...' : ACTION_SECTION.DIALOG.JOIN_CREATE_BUTTON}
+                </button>
               </div>
 
               {/* Error rules block shown at end of dialog */}
