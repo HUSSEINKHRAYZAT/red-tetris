@@ -1,4 +1,3 @@
-
 // Static Text and Links for Red Tetris Application
 
 // GitHub Profile Links
@@ -62,7 +61,15 @@ export const ACTION_SECTION = {
     TITLE_MULTI: 'Enter name for Multiplayer',
     DESCRIPTION: 'Please provide the player name to continue.',
     PLACEHOLDER: 'Your name',
+    PLACEHOLDER_ROOM: 'Enter room id',
+    GENERATE_BUTTON: 'Generate',
+    PLAY_SOLO_BUTTON: 'Play Solo',
+    JOIN_CREATE_BUTTON: 'Join / Create',
     CANCEL_BUTTON: 'Cancel',
     CONFIRM_BUTTON: 'Confirm',
+
+    // Validation rules displayed on error
+    NAME_RULES: 'Name rules: must be 3-20 characters and include at least one letter and one number.',
+    ROOM_RULES: 'Room ID rules: 3-20 characters, uppercase letters and numbers only (A-Z, 0-9).',
   },
 }

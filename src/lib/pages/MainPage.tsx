@@ -8,13 +8,12 @@ import '../../App.css'
 import { motion } from 'framer-motion'
 import ScrollDownButton from '../../components/ui/ScrollDownButton'
 import { LANDING_PAGE } from '../static'
-import JumbotronSection from '../utils/JumbotronSection'
+import JumbotronSection from '../../components/JumbotronSection'
 
 export default function MainPage() {
   return (
     <main className="main-page">
       <JumbotronSection />
-
       <AboutSection />
       <TeamSection />
       <ActionSection />

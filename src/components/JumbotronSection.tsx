@@ -1,9 +1,9 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 // @ts-ignore
-import { GridScan } from '../../components/GridScan'
-import ScrollDownButton from '../../components/ui/ScrollDownButton'
-import { LANDING_PAGE } from '../static'
+import { GridScan } from './GridScan'
+import ScrollDownButton from './ui/ScrollDownButton'
+import { LANDING_PAGE } from '../lib/static'
 
 export default function JumbotronSection() {
   return (

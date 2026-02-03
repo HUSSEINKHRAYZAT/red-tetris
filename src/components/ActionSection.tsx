@@ -11,11 +11,14 @@ import {
 } from './ui/dialog'
 import { ACTION_SECTION } from '../lib/static';
 import { socketStorage } from '../lib/utils/storage'
+import { isValidPlayerName, isValidRoomId, generateRoomId } from '../lib/utils/validation'
 
 export default function ActionSection() {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [playerName, setPlayerName] = useState(socketStorage.getPlayerName() ?? '')
   const [roomId, setRoomId] = useState('')
+  const [nameError, setNameError] = useState(false)
+  const [roomError, setRoomError] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   const closeTimerRef = useRef<number | null>(null)
 
@@ -58,40 +61,44 @@ export default function ActionSection() {
   }, [])
 
   function handlePlaySolo() {
-    if (!playerName || playerName.trim() === '') {
-      alert('Please enter a player name')
-      return
-    }
+    const name = playerName?.trim() ?? ''
+    const validName = isValidPlayerName(name)
+    setNameError(!validName)
 
-    socketStorage.setPlayerName(playerName.trim())
+    if (!validName) return
+
+    socketStorage.setPlayerName(name)
     socketStorage.clearCurrentRoom()
 
-    console.log('Start singleplayer as', playerName.trim())
-    setDialogOpen(false)
+    console.log('Start singleplayer as', name)
+    // close with animation
+    handleDialogOpenChange(false)
   }
 
   function handleJoinOrCreateRoom() {
-    if (!playerName || playerName.trim() === '') {
-      alert('Please enter a player name')
-      return
-    }
+    const name = playerName?.trim() ?? ''
+    const room = roomId?.trim().toUpperCase() ?? ''
 
-    if (!roomId || roomId.trim() === '') {
-      alert('Please enter or generate a room id')
-      return
-    }
+    const validName = isValidPlayerName(name)
+    const validRoom = isValidRoomId(room)
 
-    const room = roomId.trim()
-    socketStorage.setPlayerName(playerName.trim())
+    setNameError(!validName)
+    setRoomError(!validRoom)
+
+    if (!validName || !validRoom) return
+
+    socketStorage.setPlayerName(name)
     socketStorage.setCurrentRoom(room)
 
-    console.log('Join/Create room', room, 'as', playerName.trim())
-    setDialogOpen(false)
+    console.log('Join/Create room', room, 'as', name)
+    // close with animation
+    handleDialogOpenChange(false)
   }
 
   function handleGenerateRoom() {
-    const id = Math.random().toString(36).slice(2, 8).toUpperCase()
+    const id = generateRoomId()
     setRoomId(id)
+    setRoomError(false)
   }
 
   return (
@@ -132,13 +139,16 @@ export default function ActionSection() {
 
               <input
                 value={playerName}
-                onChange={(e) => setPlayerName(e.target.value)}
+                onChange={(e) => {
+                  setPlayerName(e.target.value)
+                  if (nameError) setNameError(false)
+                }}
                 placeholder={ACTION_SECTION.DIALOG.PLACEHOLDER}
-                className="w-full mt-2 p-3 rounded bg-[#0b0b0b] border border-gray-800 text-white"
+                className={`w-full mt-2 p-3 rounded bg-[#0b0b0b] border ${nameError ? 'border-red-500' : 'border-gray-800'} text-white`}
               />
 
               <div className="mt-6">
-                <button onClick={handlePlaySolo} className="w-full py-4 bg-gray-800 text-white rounded-lg text-lg font-bold">Play Solo</button>
+                <button onClick={handlePlaySolo} className="w-full py-4 bg-gray-800 text-white rounded-lg text-lg font-bold">{ACTION_SECTION.DIALOG.PLAY_SOLO_BUTTON}</button>
               </div>
 
               <div className="flex items-center my-4 gap-4">
@@ -150,16 +160,34 @@ export default function ActionSection() {
               <div className="flex items-center gap-2">
                 <input
                   value={roomId}
-                  onChange={(e) => setRoomId(e.target.value)}
-                  placeholder="Enter room id"
-                  className="flex-1 p-3 rounded bg-[#0b0b0b] border border-gray-800 text-white"
+                  onChange={(e) => {
+                    // auto-uppercase and remove invalid chars
+                    const raw = (e.target.value ?? '').toUpperCase()
+                    const sanitized = raw.replace(/[^A-Z0-9]/g, '')
+                    setRoomId(sanitized)
+                    if (roomError) setRoomError(false)
+                  }}
+                  placeholder={ACTION_SECTION.DIALOG.PLACEHOLDER_ROOM}
+                  className={`flex-1 p-3 rounded bg-[#0b0b0b] border ${roomError ? 'border-red-500' : 'border-gray-800'} text-white`}
                 />
-                <button onClick={handleGenerateRoom} className="px-4 py-2 bg-gray-700 text-white rounded">Generate</button>
+                <button onClick={handleGenerateRoom} className="px-4 py-2 bg-gray-700 text-white rounded">{ACTION_SECTION.DIALOG.GENERATE_BUTTON}</button>
               </div>
 
               <div className="mt-4">
-                <button onClick={handleJoinOrCreateRoom} className="w-full py-3 bg-primary text-black font-bold rounded-lg">Join / Create</button>
+                <button onClick={handleJoinOrCreateRoom} className="w-full py-3 bg-primary text-black font-bold rounded-lg">{ACTION_SECTION.DIALOG.JOIN_CREATE_BUTTON}</button>
               </div>
+
+              {/* Error rules block shown at end of dialog */}
+              {(nameError || roomError) && (
+                <div className="mt-4 text-red-400 font-mono text-sm space-y-1">
+                  {nameError && (
+                    <div>{ACTION_SECTION.DIALOG.NAME_RULES}</div>
+                  )}
+                  {roomError && (
+                    <div>{ACTION_SECTION.DIALOG.ROOM_RULES}</div>
+                  )}
+                </div>
+              )}
 
               <div className="mt-6 flex justify-center">
                 <DialogClose asChild>

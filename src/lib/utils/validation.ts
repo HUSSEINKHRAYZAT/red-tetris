@@ -5,10 +5,20 @@
  * Default length is 6 (alphanumeric, uppercase).
  */
 export function generateRoomId(length = 6): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-  let out = ''
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let out = "";
   for (let i = 0; i < length; i++) {
-    out += chars.charAt(Math.floor(Math.random() * chars.length))
+    out += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  return out
+  return out;
+}
+
+export function isValidPlayerName(name: string): boolean {
+  const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{3,20}$/;
+  return regex.test(name);
+}
+
+export function isValidRoomId(roomId: string): boolean {
+  const regex = /^[A-Z0-9]{3,20}$/;
+  return regex.test(roomId);
 }
