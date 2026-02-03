@@ -10,7 +10,7 @@ import {
   DialogClose,
 } from './ui/dialog'
 import { ACTION_SECTION } from '../lib/static';
-import { socketStorage } from '../lib/socket/storage'
+import { socketStorage } from '../lib/utils/storage'
 
 export default function ActionSection() {
   const [dialogOpen, setDialogOpen] = useState(false)

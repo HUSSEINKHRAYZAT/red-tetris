@@ -45,7 +45,7 @@ import type {
   GameOverPayload,
   ErrorPayload,
   InputAction,
-} from '../types';
+} from '../../utils/types';
 
 /**
  * Socket connection states

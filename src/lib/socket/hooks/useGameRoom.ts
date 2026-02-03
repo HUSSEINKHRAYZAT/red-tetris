@@ -42,14 +42,14 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { socketService } from '../services/socketService';
-import { socketStorage } from '../storage';
+import { socketStorage } from '../../utils/storage';
 import type {
   LobbyPayload,
   StatePayload,
   GameOverPayload,
   LobbyPlayer,
   GamePlayer,
-} from '../types';
+} from '../../utils/types';
 
 export interface UseGameRoomReturn {
   /** Current lobby state */

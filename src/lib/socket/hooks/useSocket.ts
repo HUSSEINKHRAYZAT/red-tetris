@@ -36,7 +36,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { socketService, SocketState } from '../services/socketService';
-import type { InputAction } from '../types';
+import type { InputAction } from '../../utils/types';
 
 export interface UseSocketReturn {
   /** Whether socket is connected */
