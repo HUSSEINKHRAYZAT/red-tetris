@@ -66,6 +66,9 @@ export interface InputPayload {
  * Player info in lobby (minimal)
  */
 export interface LobbyPlayer {
+  /** Player's socket ID */
+  id: string;
+
   /** Player's display name */
   name: string;
 
@@ -83,6 +86,9 @@ export interface LobbyPayload {
 
   /** Whether the game has started */
   started: boolean;
+
+  /** Socket ID of the current host (null if no players) */
+  hostId: string | null;
 
   /** List of players in the lobby */
   players: LobbyPlayer[];

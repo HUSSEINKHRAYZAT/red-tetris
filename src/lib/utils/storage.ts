@@ -32,6 +32,7 @@ const STORAGE_KEYS = {
   PLAYER_NAME: 'red-tetris:player-name',
   CURRENT_ROOM: 'red-tetris:current-room',
   LAST_ERROR: 'red-tetris:last-error',
+  SOCKET_ID: 'red-tetris:socket-id',
 } as const;
 
 class SocketStorage {
@@ -113,6 +114,41 @@ class SocketStorage {
       localStorage.setItem(STORAGE_KEYS.LAST_ERROR, error);
     } catch (error) {
       console.error('[Storage] Failed to set last error:', error);
+    }
+  }
+
+  /**
+   * Get stored socket id
+   * @returns socket id or null
+   */
+  getSocketId(): string | null {
+    try {
+      return localStorage.getItem(STORAGE_KEYS.SOCKET_ID);
+    } catch (error) {
+      console.error('[Storage] Failed to get socket id:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Save socket id to localStorage
+   */
+  setSocketId(id: string): void {
+    try {
+      localStorage.setItem(STORAGE_KEYS.SOCKET_ID, id);
+    } catch (error) {
+      console.error('[Storage] Failed to set socket id:', error);
+    }
+  }
+
+  /**
+   * Clear stored socket id
+   */
+  clearSocketId(): void {
+    try {
+      localStorage.removeItem(STORAGE_KEYS.SOCKET_ID);
+    } catch (error) {
+      console.error('[Storage] Failed to clear socket id:', error);
     }
   }
 
