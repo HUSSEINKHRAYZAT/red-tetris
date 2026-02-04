@@ -7,7 +7,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from './ui/dialog'
+} from '../ui/dialog'
 
 interface Props {
   open: boolean

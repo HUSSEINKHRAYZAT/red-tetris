@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
-import { ABOUT_SECTION } from "../lib/static";
+import { ABOUT_SECTION } from "../../lib/static";
 
 export default function AboutSection() {
   return (

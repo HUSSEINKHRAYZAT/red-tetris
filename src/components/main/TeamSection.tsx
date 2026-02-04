@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { TEAM_SECTION } from "../lib/static";
+import { TEAM_SECTION } from "../../lib/static";
 
 export default function TeamSection() {
   return (
