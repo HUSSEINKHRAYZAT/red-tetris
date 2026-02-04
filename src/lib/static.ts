@@ -73,3 +73,121 @@ export const ACTION_SECTION = {
     ROOM_RULES: 'Room ID rules: 3-20 characters, uppercase letters and numbers only (A-Z, 0-9).',
   },
 }
+
+/* ============================================================================
+ * GAME CONSTANTS
+ * ============================================================================ */
+
+/**
+ * Tetromino piece types and their shapes
+ * Classic 7 pieces with rotation states
+ */
+export const TETROMINOS = {
+  I: {
+    color: 'cyan',
+    shapes: [
+      [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]],
+      [[0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0]],
+    ],
+  },
+  O: {
+    color: 'yellow',
+    shapes: [[[1, 1], [1, 1]]],
+  },
+  T: {
+    color: 'purple',
+    shapes: [
+      [[0, 1, 0], [1, 1, 1], [0, 0, 0]],
+      [[0, 1, 0], [0, 1, 1], [0, 1, 0]],
+      [[0, 0, 0], [1, 1, 1], [0, 1, 0]],
+      [[0, 1, 0], [1, 1, 0], [0, 1, 0]],
+    ],
+  },
+  S: {
+    color: 'green',
+    shapes: [
+      [[0, 1, 1], [1, 1, 0], [0, 0, 0]],
+      [[0, 1, 0], [0, 1, 1], [0, 0, 1]],
+    ],
+  },
+  Z: {
+    color: 'red',
+    shapes: [
+      [[1, 1, 0], [0, 1, 1], [0, 0, 0]],
+      [[0, 0, 1], [0, 1, 1], [0, 1, 0]],
+    ],
+  },
+  J: {
+    color: 'blue',
+    shapes: [
+      [[1, 0, 0], [1, 1, 1], [0, 0, 0]],
+      [[0, 1, 1], [0, 1, 0], [0, 1, 0]],
+      [[0, 0, 0], [1, 1, 1], [0, 0, 1]],
+      [[0, 1, 0], [0, 1, 0], [1, 1, 0]],
+    ],
+  },
+  L: {
+    color: 'orange',
+    shapes: [
+      [[0, 0, 1], [1, 1, 1], [0, 0, 0]],
+      [[0, 1, 0], [0, 1, 0], [0, 1, 1]],
+      [[0, 0, 0], [1, 1, 1], [1, 0, 0]],
+      [[1, 1, 0], [0, 1, 0], [0, 1, 0]],
+    ],
+  },
+} as const;
+
+/**
+ * Color mapping for board cells
+ * 0 = empty, 1 = locked block, 2 = falling piece
+ */
+export const PIECE_COLORS: Record<number, string> = {
+  0: 'bg-gray-900', // Empty cell
+  1: 'bg-red-500 shadow-[inset_0_0_8px_rgba(255,255,255,0.3),0_0_10px_rgba(255,7,58,0.6)]', // Locked block
+  2: 'bg-red-400 shadow-[0_0_8px_rgba(255,100,100,0.6)]', // Falling piece
+};
+
+/**
+ * Keyboard controls mapping
+ * STRICT: These are the ONLY allowed key mappings per spec
+ */
+export const KEY_MAPPINGS: Record<string, string> = {
+  ArrowLeft: 'LEFT',
+  ArrowRight: 'RIGHT',
+  ArrowUp: 'ROTATE',
+  ArrowDown: 'DOWN',
+  ' ': 'DROP', // Spacebar for hard drop
+} as const;
+
+/**
+ * Control labels for UI display
+ */
+export const CONTROL_LABELS = [
+  { action: 'Move Left', key: '←' },
+  { action: 'Move Right', key: '→' },
+  { action: 'Rotate', key: '↑' },
+  { action: 'Soft Drop', key: '↓' },
+  { action: 'Hard Drop', key: 'Space' },
+] as const;
+
+/**
+ * Game board dimensions (fixed per spec)
+ */
+export const BOARD_CONFIG = {
+  COLS: 10,
+  ROWS: 20,
+  TICK_MS: 500, // Backend game tick rate
+  INPUT_THROTTLE_MS: 50, // Frontend input throttle (backend enforces this too)
+} as const;
+
+/**
+ * Game status messages
+ */
+export const GAME_MESSAGES = {
+  WAITING_FOR_HOST: 'Waiting for host to start the game...',
+  WAITING_FOR_PLAYERS: 'Waiting for more players to join...',
+  GAME_OVER: 'Game Over',
+  YOU_WIN: 'Victory! You are the last one standing!',
+  YOU_LOSE: 'Defeated! Better luck next time.',
+  PENALTY_INCOMING: 'Penalty lines incoming!',
+} as const;

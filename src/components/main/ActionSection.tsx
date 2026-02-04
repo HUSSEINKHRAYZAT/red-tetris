@@ -155,7 +155,8 @@ export default function ActionSection() {
       console.log('👤 [Multiplayer] Player name:', name)
       console.log('⏳ [Multiplayer] Waiting for lobby update...')
 
-      // TODO: Navigate to lobby/game page
+      // Navigate to game page
+      window.location.href = '/game'
 
       // close with animation
       handleDialogOpenChange(false)
