@@ -108,16 +108,24 @@ export default function ActionSection() {
 
     setIsConnecting(true)
     socketStorage.setPlayerName(name)
-    socketStorage.clearCurrentRoom()
+    
+    // Generate a random room ID for solo play
+    const soloRoomId = generateRoomId()
+    socketStorage.setCurrentRoom(soloRoomId)
 
     try {
       // Connect to server
       await socketService.connect()
       console.log('✅ [Solo] Connected to server as:', name)
       console.log('✅ [Solo] Socket ID:', socketService.getSocketId())
+      console.log('✅ [Solo] Generated room ID:', soloRoomId)
 
-      // TODO: Navigate to solo game page or start solo game logic
-      console.log('🎮 [Solo] Starting singleplayer mode...')
+      // Join the solo room
+      socketService.joinRoom(soloRoomId, name)
+      console.log('🎮 [Solo] Joining solo room:', soloRoomId)
+
+      // Navigate to game page
+      window.location.href = '/game'
 
       // close with animation
       handleDialogOpenChange(false)
