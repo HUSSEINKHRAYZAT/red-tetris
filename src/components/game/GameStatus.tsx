@@ -17,7 +17,7 @@
  * @param isHost - Whether current player is host
  */
 
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { GAME_MESSAGES } from '../../lib/static';
 import { cn } from '../../lib/utils';
 
@@ -53,8 +53,23 @@ export default function GameStatus({
   isHost,
   className,
 }: GameStatusProps) {
+  // Local state to allow host to dismiss the lobby overlay so they can access host controls
+  const [overlayHidden, setOverlayHidden] = useState(false);
+
+  // Reset overlayHidden when returning to lobby (e.g., after restart) so dialog shows again
+  useEffect(() => {
+    if (!started && !gameOver) {
+      setOverlayHidden(false);
+    }
+  }, [started, gameOver]);
+
   // Don't show status overlay if game is in progress
   if (started && !gameOver) {
+    return null;
+  }
+
+  // If host has dismissed the lobby overlay, don't show it (only applies to lobby, not gameOver)
+  if (!started && !gameOver && isHost && overlayHidden) {
     return null;
   }
 
@@ -108,6 +123,18 @@ export default function GameStatus({
           {message}
         </h2>
         <p className="text-lg font-mono text-gray-300 mb-6">{subMessage}</p>
+
+        {/* Allow host to close the lobby overlay so they can interact with the page */}
+        {!started && !gameOver && isHost && (
+          <div className="mt-4">
+            <button
+              className="px-4 py-2 bg-primary text-black font-medium rounded hover:opacity-90"
+              onClick={() => setOverlayHidden(true)}
+            >
+              Close
+            </button>
+          </div>
+        )}
 
         {/* Additional info for game over */}
         {gameOver && isHost && (
