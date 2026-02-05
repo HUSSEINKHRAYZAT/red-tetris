@@ -40,6 +40,12 @@ interface GameStatusProps {
   /** Whether current player is host */
   isHost: boolean;
 
+  /** Callback to start the game (host only) */
+  onStart?: () => void;
+
+  /** Callback to clear boards / restart (host only) */
+  onRestart?: () => void;
+
   /** Optional CSS classes */
   className?: string;
 }
@@ -51,6 +57,8 @@ export default function GameStatus({
   mySocketId,
   winnerName,
   isHost,
+  onStart,
+  onRestart,
   className,
 }: GameStatusProps) {
   // Local state to allow host to dismiss the lobby overlay so they can access host controls
@@ -68,8 +76,8 @@ export default function GameStatus({
     return null;
   }
 
-  // If host has dismissed the lobby overlay, don't show it (only applies to lobby, not gameOver)
-  if (!started && !gameOver && isHost && overlayHidden) {
+  // If host has dismissed the lobby overlay, don't show it (applies to lobby and gameOver when dismissed)
+  if (isHost && overlayHidden && (!started || gameOver)) {
     return null;
   }
 
@@ -126,9 +134,18 @@ export default function GameStatus({
 
         {/* Allow host to close the lobby overlay so they can interact with the page */}
         {!started && !gameOver && isHost && (
-          <div className="mt-4">
+          <div className="mt-4 flex justify-center gap-3">
             <button
               className="px-4 py-2 bg-primary text-black font-medium rounded hover:opacity-90"
+              onClick={() => {
+                if (onStart) onStart();
+              }}
+            >
+              Start Game
+            </button>
+
+            <button
+              className="px-4 py-2 bg-transparent border border-gray-700 rounded text-white hover:bg-gray-800 transition-colors"
               onClick={() => setOverlayHidden(true)}
             >
               Close
@@ -138,9 +155,18 @@ export default function GameStatus({
 
         {/* Additional info for game over */}
         {gameOver && isHost && (
-          <p className="text-sm font-mono text-gray-500 italic">
-            Use the Restart button to play again
-          </p>
+          <div className="mt-4">
+            <button
+              className="px-4 py-2 bg-primary text-black font-medium rounded hover:opacity-90"
+              onClick={() => {
+                // hide overlay immediately so host can interact while server restarts
+                setOverlayHidden(true);
+                if (onRestart) onRestart();
+              }}
+            >
+              Clear Boards
+            </button>
+          </div>
         )}
         {gameOver && !isHost && (
           <p className="text-sm font-mono text-gray-500 italic">

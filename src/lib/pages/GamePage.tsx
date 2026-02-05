@@ -321,6 +321,8 @@ export default function GamePage() {
             mySocketId={socketId}
             winnerName={winnerName}
             isHost={isHost}
+            onStart={handleStart}
+            onRestart={handleRestart}
           />
         )}
       </main>

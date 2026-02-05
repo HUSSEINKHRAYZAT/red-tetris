@@ -108,7 +108,7 @@ export default function ActionSection() {
 
     setIsConnecting(true)
     socketStorage.setPlayerName(name)
-    
+
     // Generate a random room ID for solo play
     const soloRoomId = generateRoomId()
     socketStorage.setCurrentRoom(soloRoomId)

@@ -9,5 +9,9 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
-  }
+  },
+  server: {
+    host: true, // bind to all network interfaces (shows Network URL)
+    port: 5173,
+  },
 })

@@ -56,6 +56,7 @@ export default function HostControls({
   className,
 }: HostControlsProps) {
   const [showStartDialog, setShowStartDialog] = useState(false);
+  const [showRestartDialog, setShowRestartDialog] = useState(false);
 
   // Don't render anything if not host
   if (!isHost) {
@@ -65,6 +66,11 @@ export default function HostControls({
   const handleStartGame = () => {
     onStart();
     setShowStartDialog(false);
+  };
+
+  const handleConfirmRestart = () => {
+    onRestart();
+    setShowRestartDialog(false);
   };
 
   return (
@@ -113,17 +119,48 @@ export default function HostControls({
         </>
       )}
 
-      {/* Restart Game Button (only after game ends) */}
+      {/* Restart Game Dialog (only after game ends) */}
       {started && gameOver && (
-        <button
-          onClick={onRestart}
-          className="w-full px-6 py-3 bg-primary hover:bg-primary/90 text-white font-bold uppercase tracking-wider rounded-lg shadow-lg hover:shadow-[0_0_20px_rgba(255,7,58,0.6)] transition-all transform hover:-translate-y-0.5 active:translate-y-0"
-        >
-          <span className="flex items-center justify-center gap-2">
-            <span>🔄</span>
-            <span>Restart Game</span>
-          </span>
-        </button>
+        <>
+          <button
+            onClick={() => setShowRestartDialog(true)}
+            className="w-full px-6 py-3 bg-primary hover:bg-primary/90 text-white font-bold uppercase tracking-wider rounded-lg shadow-lg hover:shadow-[0_0_20px_rgba(255,7,58,0.6)] transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+          >
+            <span className="flex items-center justify-center gap-2">
+              <span>🔄</span>
+              <span>Restart Game</span>
+            </span>
+          </button>
+
+          <Dialog open={showRestartDialog} onOpenChange={setShowRestartDialog}>
+            <DialogContent className="bg-[#0a0a0a] border-primary/30">
+              <DialogHeader>
+                <DialogTitle className="text-white text-xl">Restart Game?</DialogTitle>
+                <DialogDescription className="text-gray-400">
+                  Are you sure you want to restart the game? This will reset boards and start a new round for all players.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="mt-6 flex flex-col gap-3">
+                <button
+                  onClick={handleConfirmRestart}
+                  className="w-full px-6 py-4 bg-primary hover:bg-primary/90 text-white font-bold uppercase tracking-wider rounded-lg shadow-lg hover:shadow-[0_0_20px_rgba(255,7,58,0.6)] transition-all"
+                >
+                  <span className="flex items-center justify-center gap-2">
+                    <span>🔄</span>
+                    <span>Confirm Restart</span>
+                  </span>
+                </button>
+
+                <DialogClose asChild>
+                  <button className="w-full px-6 py-3 bg-transparent border border-gray-700 rounded text-white hover:bg-gray-800 transition-colors">
+                    Cancel
+                  </button>
+                </DialogClose>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </>
       )}
 
       {/* Host Badge (always visible to host) */}
