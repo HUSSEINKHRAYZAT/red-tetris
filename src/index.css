@@ -225,3 +225,13 @@ h1, h2, h3, h4, h5, h6, .jumbotron__title, .font-display, .title {
   --font-heading: 'UnifrakturMaguntia', cursive;
   --font-sans: 'Share Tech Mono', monospace;
 }
+
+/* Animation delays for loading dots */
+@layer utilities {
+  .delay-75 {
+    animation-delay: 75ms;
+  }
+  .delay-150 {
+    animation-delay: 150ms;
+  }
+}

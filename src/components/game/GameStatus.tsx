@@ -99,18 +99,23 @@ export default function GameStatus({
     }
   } else if (gameOver) {
     // Game over state
+    console.log('[GameStatus DEBUG] gameOver=true, winner:', winner, 'mySocketId:', mySocketId, 'winnerName:', winnerName);
+
     if (winner === mySocketId) {
       message = GAME_MESSAGES.YOU_WIN;
       subMessage = winnerName ? `${winnerName} wins!` : 'Victory!';
       statusColor = 'text-green-400';
+      console.log('[GameStatus] Showing YOU WIN');
     } else if (winner) {
       message = GAME_MESSAGES.YOU_LOSE;
       subMessage = winnerName ? `${winnerName} wins!` : 'Game Over';
       statusColor = 'text-red-400';
+      console.log('[GameStatus] Showing YOU LOSE');
     } else {
       message = GAME_MESSAGES.GAME_OVER;
       subMessage = 'No winner';
       statusColor = 'text-gray-400';
+      console.log('[GameStatus] Showing NO WINNER');
     }
   }
 
@@ -167,11 +172,6 @@ export default function GameStatus({
               Clear Boards
             </button>
           </div>
-        )}
-        {gameOver && !isHost && (
-          <p className="text-sm font-mono text-gray-500 italic">
-            Waiting for host to restart...
-          </p>
         )}
       </div>
     </div>

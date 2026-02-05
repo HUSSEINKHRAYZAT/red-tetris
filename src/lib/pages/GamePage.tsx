@@ -33,7 +33,7 @@ import GameControls from '@/components/game/GameControls';
 import TetrisBoard from '@/components/game/TetrisBoard';
 import OpponentsPanel from '@/components/game/OpponentsPanel';
 import HostControls from '@/components/game/HostControls';
-import GameStatus from '@/components/game/GameStatus';
+import LobbyDialog from '@/components/game/LobbyDialog';
 
 // Types & Utils
 import { C2S_EVENTS, S2C_EVENTS } from '@/lib/socket/events';
@@ -63,12 +63,16 @@ export default function GamePage() {
   // Lobby state (from LOBBY event - before game starts)
   const [isHost, setIsHost] = useState(false);
   const [started, setStarted] = useState(false);
+  const [lobbyPlayers, setLobbyPlayers] = useState<Array<{
+    id: string;
+    name: string;
+    isHost: boolean;
+    lastRoundResult?: boolean | null;
+  }>>([]);
 
   // Game state (from STATE event - during game)
   const [gameState, setGameState] = useState<SanitizedGameState | null>(null);
   const [gameOver, setGameOver] = useState(false);
-  const [winner, setWinner] = useState<string | null>(null);
-  const [winnerName, setWinnerName] = useState<string>('');
 
   // Input throttling
   const [lastInputTime, setLastInputTime] = useState(0);
@@ -157,13 +161,27 @@ export default function GamePage() {
 
       setIsHost(amIHost);
       setStarted(data.started);
+
+      // Update lobby players list (preserve lastRoundResult if already set)
+      setLobbyPlayers(prevPlayers => 
+        data.players.map((p: { id: string; name: string; isHost: boolean }) => {
+          const existing = prevPlayers.find(prev => prev.id === p.id);
+          return {
+            id: p.id,
+            name: p.name,
+            isHost: p.isHost,
+            lastRoundResult: existing?.lastRoundResult ?? null,
+          };
+        })
+      );
     };
 
     // GAME_STARTED event
     const handleGameStarted = () => {
       console.log('[GAME_STARTED]');
       setGameOver(false);
-      setWinner(null);
+      // Clear previous round results when new game starts
+      setLobbyPlayers(prev => prev.map(p => ({ ...p, lastRoundResult: null })));
       setStarted(true);
     };
 
@@ -184,26 +202,22 @@ export default function GamePage() {
     const handleGameOver = (data: GameOverPayload) => {
       console.log('[GAME_OVER]', data);
       setGameOver(true);
-      setWinner(data.winner);
 
-      // Find winner name
-      if (data.winner && gameState) {
-        const winnerPlayer =
-          gameState.myPlayer?.id === data.winner
-            ? gameState.myPlayer
-            : gameState.opponents.find((opp: any) => opp.id === data.winner);
-
-        setWinnerName(winnerPlayer?.name || 'Unknown');
-      }
+      // Mark winners and losers in lobby players
+      setLobbyPlayers(prev =>
+        prev.map(p => ({
+          ...p,
+          lastRoundResult: data.winner ? (p.id === data.winner ? true : false) : null,
+        }))
+      );
     };
 
     // GAME_RESTARTED event
     const handleGameRestarted = () => {
       console.log('[GAME_RESTARTED]');
       setGameOver(false);
-      setWinner(null);
-      setWinnerName('');
       setStarted(false);
+      // Keep lastRoundResult so it shows in lobby
     };
 
     // ERROR event
@@ -312,17 +326,14 @@ export default function GamePage() {
         {/* Right Sidebar: Opponents */}
         <OpponentsPanel opponents={gameState?.opponents || []} />
 
-        {/* Game Status Overlay (lobby/game over) */}
+        {/* Lobby Dialog (shown in lobby or post-game) */}
         {(!started || gameOver) && (
-          <GameStatus
-            started={started}
-            gameOver={gameOver}
-            winner={winner}
+          <LobbyDialog
+            players={lobbyPlayers}
             mySocketId={socketId}
-            winnerName={winnerName}
             isHost={isHost}
-            onStart={handleStart}
-            onRestart={handleRestart}
+            isPostGame={gameOver}
+            onStart={gameOver ? handleRestart : handleStart}
           />
         )}
       </main>
