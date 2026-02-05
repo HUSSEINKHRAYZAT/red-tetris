@@ -17,3 +17,5 @@ this is a manual file to tell the backend what should do according to the subjec
 
 2. the event that send the lobby to the client when he enter a room, i send a {name : string , isHost: boolean}, this will make some problems because in the frontend , the hosting is taking by the name which can be duplicated. For now ,i send also the ID with them , BUT I NEED YOUR ACCEPT FOR IT!
 
+3. when i play alone, the backend saw that im the winner directly without any real playing, i guess its a problem realted to one-man room, i fix it using AI from the first simple prompt, which provide that the problems isnt complex.
+

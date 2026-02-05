@@ -25,7 +25,7 @@ interface PlayerLobbyCardProps {
   /** Result from previous round: true = won, false = lost, null = no result yet */
   lastRoundResult?: boolean | null;
 
-  /** Whether this is the current player (me) */
+	/** Whether this is the current player (me) */
   isMe?: boolean;
 }
 

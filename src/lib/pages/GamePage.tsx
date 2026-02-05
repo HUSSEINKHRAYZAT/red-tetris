@@ -163,7 +163,7 @@ export default function GamePage() {
       setStarted(data.started);
 
       // Update lobby players list (preserve lastRoundResult if already set)
-      setLobbyPlayers(prevPlayers => 
+      setLobbyPlayers(prevPlayers =>
         data.players.map((p: { id: string; name: string; isHost: boolean }) => {
           const existing = prevPlayers.find(prev => prev.id === p.id);
           return {
