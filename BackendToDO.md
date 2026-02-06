@@ -19,3 +19,4 @@ this is a manual file to tell the backend what should do according to the subjec
 
 3. when i play alone, the backend saw that im the winner directly without any real playing, i guess its a problem realted to one-man room, i fix it using AI from the first simple prompt, which provide that the problems isnt complex.
 
+4. 

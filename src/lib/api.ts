@@ -12,9 +12,11 @@ const defaultPort = env.VITE_BACKEND_PORT ?? '3000';
 const envBackend = env.VITE_BACKEND_URL ?? null;
 const envSocket = env.VITE_SOCKET_URL ?? null;
 
-// Default to localhost:3000 for backend in development
-// In production, use env variables or same origin
-const defaultBackend = `http://localhost:${defaultPort}`;
+// Default to a runtime-derived backend URL when possible so clients on the LAN
+// connect to the machine they loaded the page from. Falls back to localhost for
+// non-browser contexts.
+const runtimeHost = typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.hostname}:${defaultPort}` : `http://localhost:${defaultPort}`;
+const defaultBackend = envBackend ?? runtimeHost;
 
 export const BACKEND_HTTP_URL: string = envBackend ?? defaultBackend;
 export const SOCKET_URL: string = envSocket ?? BACKEND_HTTP_URL;

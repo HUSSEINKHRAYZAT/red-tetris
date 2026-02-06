@@ -25,6 +25,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
+import { SOCKET_URL } from '@/lib/api';
 
 // Components
 import NavBar from '@/components/game/NavBar';
@@ -102,7 +103,9 @@ export default function GamePage() {
     }
 
     // Initialize socket connection
-    const newSocket = io('http://localhost:3000', {
+    // If SOCKET_URL is explicitly provided via env use it, otherwise let socket.io default to window.location (same origin)
+    const connectUrl = (typeof SOCKET_URL === 'string' && SOCKET_URL && !SOCKET_URL.includes('localhost')) ? SOCKET_URL : undefined;
+    const newSocket = io(connectUrl, {
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionAttempts: 5,
