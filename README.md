@@ -76,34 +76,39 @@ Navigate to http://localhost:5173 and start playing!
 - **Penalties:** Clear `n` lines → opponents receive `(n - 1)` indestructible lines
 - **Winning:** Last player standing wins (no scoring system)
 
-📁 Project Structure
-text
+## 📁 Project Structure
+
+```text
 red-tetris/
-├── client/                 # Frontend React application
+├── client/                  # Frontend React application
 │   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── hooks/         # Custom React hooks
-│   │   ├── services/      # Socket service and utilities
-│   │   ├── lib/           # Utilities and constants
-│   │   └── types/         # TypeScript definitions
-│   ├── tailwind.config.js # Tailwind CSS configuration
-│   └── vite.config.ts     # Vite configuration
+│   │   ├── components/      # React components
+│   │   ├── hooks/           # Custom React hooks
+│   │   ├── services/        # Socket service and utilities
+│   │   ├── lib/             # Utilities and constants
+│   │   └── types/           # TypeScript definitions
+│   ├── tailwind.config.js   # Tailwind CSS configuration
+│   └── vite.config.ts       # Vite configuration
 │
-├── server/                # Backend Node.js server
+├── server/                  # Backend Node.js server
 │   ├── src/
-│   │   ├── game/         # Game logic (prototype-based)
-│   │   ├── socket/       # Socket.io handlers
-│   │   └── utils/        # Server utilities
+│   │   ├── game/            # Game logic (prototype-based)
+│   │   ├── socket/          # Socket.io handlers
+│   │   └── utils/           # Server utilities
 │   └── package.json
 │
-├── public/               # Static assets
-├── tests/               # Test files
-├── .env.example         # Environment variables template
+├── public/                  # Static assets
+├── tests/                   # Test files
+├── .env.example             # Environment variables template
 ├── .gitignore
 └── README.md
-🔧 Development
-Backend Development
-bash
+```
+
+## 🔧 Development
+
+### Backend Development
+
+``` bash
 cd server
 npm run dev      # Development mode with hot reload
 npm test        # Run tests
@@ -115,7 +120,9 @@ npm run dev      # Start development server
 npm run build    # Build for production
 npm test        # Run tests
 npm run lint    # Lint code
-Testing Requirements
+```
+
+### Testing Requirements
 Statement coverage: ≥70%
 
 Function coverage: ≥70%
@@ -124,8 +131,9 @@ Line coverage: ≥70%
 
 Branch coverage: ≥50%
 
-🚫 Technical Constraints
-Mandatory Requirements
+### 🚫 Technical Constraints
+
+#### Mandatory Requirements
 ✅ Frontend: Functional programming (no this keyword)
 
 ✅ Backend: Prototype-based OOP (no ES6 classes)
@@ -136,18 +144,20 @@ Mandatory Requirements
 
 ✅ Architecture: Client-server model with real-time updates
 
-Forbidden Technologies
+#### Forbidden Technologies
 ❌ Canvas or SVG elements
 
 ❌ jQuery or DOM manipulation libraries
 
-❌ HTML <table> for layout
+❌ HTML <table>
+
+#### for layout
 
 ❌ Authentication systems (simple room-based access)
 
 ❌ Database persistence (in-memory games only)
 
-🎨 Design
+### 🎨 Design
 Color Palette
 Primary: #09122C (Dark Blue)
 
@@ -157,7 +167,7 @@ Accent: #BE3144 (Bright Red)
 
 Highlight: #E17564 (Salmon)
 
-UI Components
+### UI Components
 Game Board: 10×20 CSS Grid with colored blocks
 
 Spectrum View: Column height visualization for opponents
@@ -166,7 +176,7 @@ Player Panel: Real-time player status and statistics
 
 Control Guide: On-screen keyboard mapping
 
-🔌 Socket.io Events
+### 🔌 Socket.io Events
 Client → Server
 javascript
 // Join a room
@@ -188,7 +198,7 @@ socket.on('STATE', (data) => { /* board, pieces, scores */ });
 // Game events
 socket.on('GAME_STARTED', () => { /* game begins */ });
 socket.on('GAME_OVER', (data) => { /* winner announced */ });
-🐳 Docker Support
+### 🐳 Docker Support
 bash
 # Build and run with Docker Compose
 docker-compose up --build
@@ -205,7 +215,7 @@ Spectrum updates: Real-time column height calculations
 
 Multi-room support: Concurrent games with separate states
 
-🤝 Contributing
+## 🤝 Contributing
 Fork the repository
 
 Create a feature branch (git checkout -b feature/AmazingFeature)
@@ -227,17 +237,17 @@ Maintain 70%+ test coverage
 
 Update documentation accordingly
 
-📝 License
+## 📝 License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-🙏 Acknowledgments
+## 🙏 Acknowledgments
 Redpelicans - Project sponsor
 
 Original Tetris - Game concept by Alexey Pajitnov
 
 JavaScript Community - For amazing tools and libraries
 
-📞 Support
+## 📞 Support
 For issues, questions, or feedback:
 
 Open a GitHub Issue
