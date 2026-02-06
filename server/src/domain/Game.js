@@ -6,6 +6,9 @@ class Game {
     this.room = room;
     this.players = new Map(); // socketId -> player
     this.started = false;
+
+    // Shared piece queue for the room (7-bag style) so all players see the same sequence
+    this.pieceQueue = [];
   }
 
   /* ---------------- LOBBY ---------------- */
@@ -60,16 +63,43 @@ class Game {
 
   /* ---------------- GAME ---------------- */
 
+  // 7-bag generator helpers
+  generateBag() {
+    const types = ["I", "O", "T", "S", "Z", "J", "L"];
+    // Fisher-Yates shuffle
+    for (let i = types.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [types[i], types[j]] = [types[j], types[i]];
+    }
+    return types;
+  }
+
+  refillQueue() {
+    // Keep a modest lookahead; refill with a new bag when queue is running low
+    while (this.pieceQueue.length < 14) {
+      this.pieceQueue.push(...this.generateBag());
+      // limit ultimate queue growth
+      if (this.pieceQueue.length > 200) this.pieceQueue.length = 200;
+    }
+  }
+
+  drawNextType() {
+    if (this.pieceQueue.length === 0) this.refillQueue();
+    return this.pieceQueue.shift();
+  }
+
   spawnPieceForPlayer(p) {
-    // For now: always spawn I piece at top center
-    p.activePiece = new Piece("I", 3, 0);
+    // Draw next piece type from the shared room queue
+    const type = this.drawNextType();
+    // Center spawn position - adjusted for different piece widths
+    const startX = type === 'I' ? 3 : type === 'O' ? 4 : 3;
+    p.activePiece = new Piece(type, startX, 0);
   }
 
   linesToGarbage(cleared) {
-    if (cleared === 2) return 1;
-    if (cleared === 3) return 2;
-    if (cleared === 4) return 4;
-    return 0;
+    // Spec: opponents receive (n - 1) indestructible penalty lines
+    // 1 line → 0 penalties, 2 lines → 1 penalty, 3 lines → 2 penalties, 4 lines → 3 penalties
+    return Math.max(0, cleared - 1);
   }
 
   // ✅ send garbage to all other alive players
@@ -110,10 +140,27 @@ class Game {
 
   checkGameOver() {
     const alivePlayers = [...this.players.values()].filter((pl) => pl.alive);
-    if (alivePlayers.length <= 1) {
-      this.started = false;
-      return { gameOver: true, winner: alivePlayers[0]?.id ?? null };
+
+    // If there are multiple players in the room, the game ends when 0 or 1 remain alive
+    if (this.players.size > 1) {
+      if (alivePlayers.length <= 1) {
+        this.started = false;
+        return { gameOver: true, winner: alivePlayers[0]?.id ?? null };
+      }
+      return { gameOver: false };
     }
+
+    // For single-player rooms, the game should continue while the single player is alive.
+    // End only when that player dies (alivePlayers.length === 0).
+    if (this.players.size === 1) {
+      if (alivePlayers.length === 0) {
+        this.started = false;
+        return { gameOver: true, winner: null };
+      }
+      return { gameOver: false };
+    }
+
+    // No players — nothing to do
     return { gameOver: false };
   }
 
@@ -124,6 +171,10 @@ class Game {
     if (this.started) throw new Error("Game already started");
 
     this.started = true;
+
+    // initialize shared queue for deterministic same sequence
+    this.pieceQueue = [];
+    this.refillQueue();
 
     for (const p of this.players.values()) {
       p.board = new Board();
@@ -263,13 +314,20 @@ class Game {
   }
 
   getLobbyState() {
+    // Return players with id so clients can reliably identify the host
+    const players = [...this.players.values()].map((p) => ({
+      id: p.id,
+      name: p.name,
+      isHost: p.isHost,
+    }));
+
+    const hostId = players.find((p) => p.isHost)?.id ?? null;
+
     return {
       room: this.room,
       started: this.started,
-      players: [...this.players.values()].map((p) => ({
-        name: p.name,
-        isHost: p.isHost,
-      })),
+      hostId,
+      players,
     };
   }
 
@@ -277,6 +335,8 @@ class Game {
     return {
       room: this.room,
       started: this.started,
+      // expose a short preview of upcoming types so clients can render the same preview
+      nextPieces: this.pieceQueue.slice(0, 6),
       players: [...this.players.values()].map((p) => {
         const board = p.board ? p.board.getState() : null;
         const cells = p.activePiece ? p.activePiece.getCells() : null;
@@ -292,6 +352,7 @@ class Game {
 
           board,
           activePiece: cells,
+          activePieceType: p.activePiece?.type ?? null,
           boardWithPiece:
             board && cells ? this.buildBoardWithPiece(board, cells) : board,
         };

@@ -3,6 +3,8 @@ class Board {
     this.rows = rows;
     this.cols = cols;
     this.grid = Array.from({ length: rows }, () => Array(cols).fill(0));
+    // Penalty block marker (indestructible)
+    this.PENALTY_VALUE = 8;
   }
 
   getState() {
@@ -34,16 +36,29 @@ class Board {
   }
 
   clearFullLines() {
-    const isFull = (row) => row.every((cell) => cell !== 0);
+    // A row is clearable if:
+    // 1. All cells are non-zero (full row)
+    // 2. Row does NOT contain any penalty blocks (PENALTY_VALUE)
+    const isClearable = (row) => {
+      // Must be completely filled
+      if (!row.every((cell) => cell !== 0)) return false;
+      // Must NOT contain any indestructible penalty blocks
+      if (row.some((cell) => cell === this.PENALTY_VALUE)) return false;
+      return true;
+    };
 
     const remaining = [];
     let cleared = 0;
 
     for (const row of this.grid) {
-      if (isFull(row)) cleared++;
-      else remaining.push(row);
+      if (isClearable(row)) {
+        cleared++;
+      } else {
+        remaining.push(row);
+      }
     }
 
+    // Add empty rows at top to maintain board height
     while (remaining.length < this.rows) {
       remaining.unshift(Array(this.cols).fill(0));
     }
@@ -66,7 +81,8 @@ class Board {
       const hole =
         holeCol !== null ? holeCol : Math.floor(Math.random() * this.cols);
 
-      const garbageRow = Array(this.cols).fill(1);
+      // Use PENALTY_VALUE for indestructible garbage rows
+      const garbageRow = Array(this.cols).fill(this.PENALTY_VALUE);
       garbageRow[hole] = 0;
 
       this.grid.push(garbageRow);
