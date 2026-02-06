@@ -137,14 +137,19 @@ export const TETROMINOS = {
   },
 } as const;
 
+// Penalty tile value used by server (indestructible garbage). Keep in sync with backend Board.PENALTY_VALUE
+export const PENALTY_VALUE = 8;
+
 /**
  * Color mapping for board cells
- * 0 = empty, 1 = locked block, 2 = falling piece
+ * 0 = empty, 1 = locked block, 2 = falling piece, 8 = indestructible penalty
  */
 export const PIECE_COLORS: Record<number, string> = {
   0: 'bg-gray-900', // Empty cell
   1: 'bg-red-500 shadow-[inset_0_0_8px_rgba(255,255,255,0.3),0_0_10px_rgba(255,7,58,0.6)]', // Locked block
   2: 'bg-red-400 shadow-[0_0_8px_rgba(255,100,100,0.6)]', // Falling piece
+  // Penalty (indestructible) blocks are visually distinct: dark yellow with inset shadow
+  [PENALTY_VALUE]: 'bg-yellow-900/90 shadow-[inset_0_0_8px_rgba(0,0,0,0.6),0_0_10px_rgba(255,200,0,0.18)]',
 };
 
 /**

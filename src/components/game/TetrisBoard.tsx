@@ -15,8 +15,7 @@
  * @param isActive - Whether this is the active player's board
  */
 
-import React from 'react';
-import { BOARD_CONFIG, PIECE_COLORS } from '../..//lib/static';
+import { BOARD_CONFIG, PIECE_COLORS, PENALTY_VALUE } from '../../lib/static';
 import { cn } from '../../lib/utils';
 
 interface TetrisBoardProps {
@@ -90,6 +89,17 @@ export default function TetrisBoard({ board, isActive = false, className }: Tetr
             ))
           )}
         </div>
+      </div>
+
+      {/* Legend for penalty (indestructible) blocks */}
+      <div className="absolute bottom-2 right-2 flex items-center gap-2 pointer-events-none">
+        <div
+          className={cn(
+            'w-4 h-4 rounded-sm border border-black/20',
+            PIECE_COLORS[PENALTY_VALUE]
+          )}
+        />
+        <span className="text-xs text-gray-400">Indestructible penalty</span>
       </div>
 
       {/* Visual overlay for empty board state */}
