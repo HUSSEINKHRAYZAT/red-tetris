@@ -28,26 +28,21 @@ export default function ActionSection() {
   useEffect(() => {
     // Listen for connection events
     const unsubConnect = socketService.onConnect(() => {
-      console.log('✅ [ActionSection] Socket connected! ID:', socketService.getSocketId())
+      // connection established
     })
 
     const unsubDisconnect = socketService.onDisconnect(() => {
-      console.log('❌ [ActionSection] Socket disconnected')
+      // disconnected
     })
 
     // Listen for lobby updates
     const unsubLobby = socketService.onLobbyUpdate((data) => {
-      console.log('🎮 [ActionSection] Lobby update received:', {
-        room: data.room,
-        started: data.started,
-        players: data.players,
-        playerCount: data.players.length
-      })
+      // lobby update received
     })
 
     // Listen for errors
     const unsubError = socketService.onError((data) => {
-      console.error('⚠️ [ActionSection] Server error:', data.message)
+      // server error
     })
 
     return () => {
@@ -116,13 +111,9 @@ export default function ActionSection() {
     try {
       // Connect to server
       await socketService.connect()
-      console.log('✅ [Solo] Connected to server as:', name)
-      console.log('✅ [Solo] Socket ID:', socketService.getSocketId())
-      console.log('✅ [Solo] Generated room ID:', soloRoomId)
 
       // Join the solo room
       socketService.joinRoom(soloRoomId, name)
-      console.log('🎮 [Solo] Joining solo room:', soloRoomId)
 
       // Navigate to game page
       window.location.href = '/game'
@@ -130,7 +121,6 @@ export default function ActionSection() {
       // close with animation
       handleDialogOpenChange(false)
     } catch (error) {
-      console.error('❌ [Solo] Failed to connect:', error)
       setIsConnecting(false)
     }
   }
@@ -154,14 +144,9 @@ export default function ActionSection() {
     try {
       // Connect to server
       await socketService.connect()
-      console.log('✅ [Multiplayer] Connected to server as:', name)
-      console.log('✅ [Multiplayer] Socket ID:', socketService.getSocketId())
 
       // Join the room
       socketService.joinRoom(room, name)
-      console.log('🎮 [Multiplayer] Joining room:', room)
-      console.log('👤 [Multiplayer] Player name:', name)
-      console.log('⏳ [Multiplayer] Waiting for lobby update...')
 
       // Navigate to game page
       window.location.href = '/game'
@@ -169,7 +154,6 @@ export default function ActionSection() {
       // close with animation
       handleDialogOpenChange(false)
     } catch (error) {
-      console.error('❌ [Multiplayer] Failed to connect:', error)
       setIsConnecting(false)
     }
   }

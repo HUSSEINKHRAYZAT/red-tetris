@@ -88,7 +88,6 @@ export default function GamePage() {
 
     if (!storedRoom || !storedName) {
       // Redirect to main page if no room/name
-      console.warn('[GamePage] No room or name in storage, redirecting...');
       navigate('/');
       return;
     }
@@ -115,7 +114,6 @@ export default function GamePage() {
 
     // Connection handlers
     newSocket.on('connect', () => {
-      console.log('[Socket] Connected:', newSocket.id);
       setIsConnected(true);
       if (newSocket.id) {
         setSocketId(newSocket.id);
@@ -126,12 +124,10 @@ export default function GamePage() {
       }
 
       // Auto-join room on connect
-      console.log('[Socket] Emitting JOIN:', { room: storedRoom, name: storedName });
       newSocket.emit(C2S_EVENTS.JOIN, { room: storedRoom, name: storedName });
     });
 
     newSocket.on('disconnect', () => {
-      console.log('[Socket] Disconnected');
       setIsConnected(false);
       setSocketId(null);
       // Clear persisted socket id on disconnect
@@ -140,7 +136,6 @@ export default function GamePage() {
 
     // Cleanup on unmount
     return () => {
-      console.log('[Socket] Cleanup - disconnecting');
       socketStorage.clearSocketId();
       newSocket.disconnect();
     };
@@ -154,13 +149,9 @@ export default function GamePage() {
 
     // LOBBY event (player list updates)
     const handleLobby = (data: LobbyPayload) => {
-      console.log('[LOBBY]', data);
-
-      // ✅ CRITICAL: Determine host status from LOBBY
-      // Use persisted socket id as a fallback — sometimes the LOBBY event can arrive before the in-memory socketId is set
+      // Determine host status from LOBBY
       const persistedId = socketStorage.getSocketId();
       const amIHost = data.hostId === socketId || data.hostId === persistedId;
-      console.log('[LOBBY] Am I host?', amIHost, '(my ID:', socketId, ', persistedId:', persistedId, ', hostId:', data.hostId, ')');
 
       setIsHost(amIHost);
       setStarted(data.started);
@@ -181,7 +172,6 @@ export default function GamePage() {
 
     // GAME_STARTED event
     const handleGameStarted = () => {
-      console.log('[GAME_STARTED]');
       setGameOver(false);
       // Clear previous round results when new game starts
       setLobbyPlayers(prev => prev.map(p => ({ ...p, lastRoundResult: null })));
@@ -203,7 +193,6 @@ export default function GamePage() {
 
     // GAME_OVER event
     const handleGameOver = (data: GameOverPayload) => {
-      console.log('[GAME_OVER]', data);
       setGameOver(true);
 
       // Mark winners and losers in lobby players
@@ -217,7 +206,6 @@ export default function GamePage() {
 
     // GAME_RESTARTED event
     const handleGameRestarted = () => {
-      console.log('[GAME_RESTARTED]');
       setGameOver(false);
       setStarted(false);
       // Keep lastRoundResult so it shows in lobby
@@ -225,7 +213,6 @@ export default function GamePage() {
 
     // ERROR event
     const handleError = (data: ErrorPayload) => {
-      console.error('[ERROR]', data.message);
       alert(`Error: ${data.message}`);
     };
 
@@ -266,7 +253,6 @@ export default function GamePage() {
       }
 
       // Emit INPUT event
-      console.log('[INPUT]', action);
       socket.emit(C2S_EVENTS.INPUT, { room, action });
       setLastInputTime(now);
     };
@@ -283,13 +269,11 @@ export default function GamePage() {
    */
   const handleStart = useCallback(() => {
     if (!socket || !room) return;
-    console.log('[START]');
     socket.emit(C2S_EVENTS.START, { room });
   }, [socket, room]);
 
   const handleRestart = useCallback(() => {
     if (!socket || !room) return;
-    console.log('[RESTART]');
     socket.emit(C2S_EVENTS.RESTART, { room });
   }, [socket, room]);
 

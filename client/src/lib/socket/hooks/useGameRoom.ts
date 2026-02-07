@@ -120,7 +120,6 @@ export function useGameRoom(roomName: string): UseGameRoomReturn {
       if (data.room === roomName) {
         setLobbyState(data);
         socketStorage.setCurrentRoom(roomName);
-        console.log('[useGameRoom] Lobby update:', data);
       }
     });
 
@@ -133,7 +132,6 @@ export function useGameRoom(roomName: string): UseGameRoomReturn {
       if (data.room === roomName) {
         setGameState(data);
         setIsGameOver(false); // Reset game over when receiving state
-        console.log('[useGameRoom] State update:', data.players.length, 'players');
       }
     });
 
@@ -144,7 +142,6 @@ export function useGameRoom(roomName: string): UseGameRoomReturn {
   useEffect(() => {
     const unsubscribe = socketService.onGameStarted((data) => {
       if (data.room === roomName) {
-        console.log('[useGameRoom] Game started');
         setIsGameOver(false);
         setWinner(null);
       }
@@ -157,7 +154,6 @@ export function useGameRoom(roomName: string): UseGameRoomReturn {
   useEffect(() => {
     const unsubscribe = socketService.onGameRestarted((data) => {
       if (data.room === roomName) {
-        console.log('[useGameRoom] Game restarted');
         setIsGameOver(false);
         setWinner(null);
         setGameState(null);
@@ -171,7 +167,6 @@ export function useGameRoom(roomName: string): UseGameRoomReturn {
   useEffect(() => {
     const unsubscribe = socketService.onGameOver((data: GameOverPayload) => {
       if (data.room === roomName) {
-        console.log('[useGameRoom] Game over. Winner:', data.winner);
         setIsGameOver(true);
         setWinner(data.winner);
       }
@@ -183,7 +178,6 @@ export function useGameRoom(roomName: string): UseGameRoomReturn {
   // Listen for errors
   useEffect(() => {
     const unsubscribe = socketService.onError((data) => {
-      console.error('[useGameRoom] Error:', data.message);
       setError(data.message);
       socketStorage.setLastError(data.message);
     });

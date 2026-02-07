@@ -124,7 +124,6 @@ class SocketService {
       this.socket.on('connect', () => {
         this.connectionState = SocketState.CONNECTED;
         this.reconnectAttempts = 0;
-        console.log('[Socket] Connected with ID:', this.socket?.id);
         resolve();
       });
 
@@ -132,7 +131,6 @@ class SocketService {
       this.socket.on('connect_error', (error) => {
         this.connectionState = SocketState.ERROR;
         this.reconnectAttempts++;
-        console.error('[Socket] Connection error:', error);
 
         if (this.reconnectAttempts >= this.maxReconnectAttempts) {
           reject(new Error('Failed to connect after multiple attempts'));
@@ -142,7 +140,6 @@ class SocketService {
       // Disconnected
       this.socket.on('disconnect', (reason) => {
         this.connectionState = SocketState.DISCONNECTED;
-        console.log('[Socket] Disconnected:', reason);
       });
     });
   }
@@ -155,7 +152,6 @@ class SocketService {
       this.socket.disconnect();
       this.socket = null;
       this.connectionState = SocketState.DISCONNECTED;
-      console.log('[Socket] Manually disconnected');
     }
   }
 
@@ -175,13 +171,11 @@ class SocketService {
    */
   joinRoom(room: string, name: string): void {
     if (!this.socket) {
-      console.error('[Socket] Cannot join room: Not connected');
       return;
     }
 
     const payload: JoinPayload = { room, name };
     this.socket.emit(C2S_EVENTS.JOIN, payload);
-    console.log('[Socket] JOIN:', payload);
   }
 
   /**
@@ -195,13 +189,11 @@ class SocketService {
    */
   startGame(room: string): void {
     if (!this.socket) {
-      console.error('[Socket] Cannot start game: Not connected');
       return;
     }
 
     const payload: StartPayload = { room };
     this.socket.emit(C2S_EVENTS.START, payload);
-    console.log('[Socket] START:', payload);
   }
 
   /**
@@ -215,13 +207,11 @@ class SocketService {
    */
   restartGame(room: string): void {
     if (!this.socket) {
-      console.error('[Socket] Cannot restart game: Not connected');
       return;
     }
 
     const payload: RestartPayload = { room };
     this.socket.emit(C2S_EVENTS.RESTART, payload);
-    console.log('[Socket] RESTART:', payload);
   }
 
   /**
@@ -238,7 +228,6 @@ class SocketService {
    */
   sendInput(room: string, action: InputAction): void {
     if (!this.socket) {
-      console.error('[Socket] Cannot send input: Not connected');
       return;
     }
 

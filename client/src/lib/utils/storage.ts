@@ -45,7 +45,7 @@ class SocketStorage {
     try {
       return localStorage.getItem(STORAGE_KEYS.PLAYER_NAME);
     } catch (error) {
-      console.error('[Storage] Failed to get player name:', error);
+      // swallow storage read errors in browser environments
       return null;
     }
   }
@@ -59,7 +59,7 @@ class SocketStorage {
     try {
       localStorage.setItem(STORAGE_KEYS.PLAYER_NAME, name);
     } catch (error) {
-      console.error('[Storage] Failed to set player name:', error);
+      // ignore storage write errors
     }
   }
 
@@ -72,7 +72,6 @@ class SocketStorage {
     try {
       return localStorage.getItem(STORAGE_KEYS.CURRENT_ROOM);
     } catch (error) {
-      console.error('[Storage] Failed to get current room:', error);
       return null;
     }
   }
@@ -86,7 +85,7 @@ class SocketStorage {
     try {
       localStorage.setItem(STORAGE_KEYS.CURRENT_ROOM, room);
     } catch (error) {
-      console.error('[Storage] Failed to set current room:', error);
+      // ignore storage write errors
     }
   }
 
@@ -99,7 +98,6 @@ class SocketStorage {
     try {
       return localStorage.getItem(STORAGE_KEYS.LAST_ERROR);
     } catch (error) {
-      console.error('[Storage] Failed to get last error:', error);
       return null;
     }
   }
@@ -113,7 +111,7 @@ class SocketStorage {
     try {
       localStorage.setItem(STORAGE_KEYS.LAST_ERROR, error);
     } catch (error) {
-      console.error('[Storage] Failed to set last error:', error);
+      // ignore storage write errors
     }
   }
 
@@ -125,7 +123,6 @@ class SocketStorage {
     try {
       return localStorage.getItem(STORAGE_KEYS.SOCKET_ID);
     } catch (error) {
-      console.error('[Storage] Failed to get socket id:', error);
       return null;
     }
   }
@@ -137,7 +134,7 @@ class SocketStorage {
     try {
       localStorage.setItem(STORAGE_KEYS.SOCKET_ID, id);
     } catch (error) {
-      console.error('[Storage] Failed to set socket id:', error);
+      // ignore storage write errors
     }
   }
 
@@ -148,7 +145,7 @@ class SocketStorage {
     try {
       localStorage.removeItem(STORAGE_KEYS.SOCKET_ID);
     } catch (error) {
-      console.error('[Storage] Failed to clear socket id:', error);
+      // ignore storage errors
     }
   }
 
@@ -159,7 +156,7 @@ class SocketStorage {
     try {
       localStorage.removeItem(STORAGE_KEYS.CURRENT_ROOM);
     } catch (error) {
-      console.error('[Storage] Failed to clear current room:', error);
+      // ignore storage errors
     }
   }
 
@@ -170,7 +167,7 @@ class SocketStorage {
     try {
       localStorage.removeItem(STORAGE_KEYS.LAST_ERROR);
     } catch (error) {
-      console.error('[Storage] Failed to clear last error:', error);
+      // ignore storage errors
     }
   }
 
@@ -183,7 +180,7 @@ class SocketStorage {
         localStorage.removeItem(key);
       });
     } catch (error) {
-      console.error('[Storage] Failed to clear storage:', error);
+      // ignore storage errors
     }
   }
 

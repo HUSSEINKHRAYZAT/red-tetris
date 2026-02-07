@@ -106,8 +106,8 @@ export function useSocket(autoConnect = true): UseSocketReturn {
   // Auto-connect on mount
   useEffect(() => {
     if (autoConnect && !socketService.isConnected()) {
-      socketService.connect().catch((error) => {
-        console.error('[useSocket] Failed to connect:', error);
+      socketService.connect().catch(() => {
+        // ignore connection errors here
       });
     }
 
