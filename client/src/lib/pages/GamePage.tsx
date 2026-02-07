@@ -59,7 +59,7 @@ export default function GamePage() {
 
   // Room & player state
   const [room, setRoom] = useState<string | null>(null);
-  const [playerName, setPlayerName] = useState<string | null>(null);
+  const [_playerName, setPlayerName] = useState<string | null>(null);
 
   // Lobby state (from LOBBY event - before game starts)
   const [isHost, setIsHost] = useState(false);

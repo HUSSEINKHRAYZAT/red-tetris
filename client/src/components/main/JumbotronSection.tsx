@@ -1,4 +1,3 @@
-import React from 'react'
 import { motion } from 'framer-motion'
 // @ts-ignore
 import { GridScan } from '../GridScan'

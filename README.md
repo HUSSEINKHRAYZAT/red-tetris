@@ -27,12 +27,51 @@ A real-time multiplayer Tetris game built with **Full Stack JavaScript**, featur
 
 ## 🚀 Quick Start
 
-### 1. Clone the Repository
+### Option 1: Docker (Recommended) 🐳
+
+**Prerequisites**: Docker & Docker Compose installed
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/red-tetris.git
+cd red-tetris
+
+# Start with Make (easiest)
+make up              # Production mode
+# OR
+make dev             # Development mode with hot-reload
+
+# Or use Docker Compose directly
+docker-compose up -d                        # Production
+docker-compose -f docker-compose.dev.yml up # Development
+```
+
+**Access the application:**
+- **Production**: http://localhost
+- **Development**: http://localhost:5173
+
+**Stop the application:**
+```bash
+make down            # Production
+make dev-down        # Development
+```
+
+See [DOCKER.md](DOCKER.md) for complete Docker documentation.
+
+---
+
+### Option 2: Manual Setup
+
+**Prerequisites**: Node.js 20+ and npm
+
+#### 1. Clone the Repository
 ```bash
 git clone https://github.com/yourusername/red-tetris.git
 cd red-tetris
-2. Install Dependencies
-bash
+```
+
+#### 2. Install Dependencies
+```bash
 # Install backend dependencies
 cd server
 npm install
@@ -40,20 +79,23 @@ npm install
 # Install frontend dependencies  
 cd ../client
 npm install
-3. Start the Application
-bash
+```
+
+#### 3. Start the Application
+```bash
 # Terminal 1: Start backend server
 cd server
-npm start
+npm run dev
 # Server runs on http://localhost:3000
 
 # Terminal 2: Start frontend development server
 cd client
 npm run dev
 # Frontend runs on http://localhost:5173
-4. Open in Browser
-Navigate to http://localhost:5173 and start playing!
 ```
+
+#### 4. Open in Browser
+Navigate to http://localhost:5173 and start playing!
 
 ## 🎯 How to Play
 
@@ -199,21 +241,53 @@ socket.on('STATE', (data) => { /* board, pieces, scores */ });
 socket.on('GAME_STARTED', () => { /* game begins */ });
 socket.on('GAME_OVER', (data) => { /* winner announced */ });
 ### 🐳 Docker Support
-bash
-# Build and run with Docker Compose
-docker-compose up --build
 
-# Or build individually
-docker build -t red-tetris-server ./server
-docker build -t red-tetris-client ./client
-📊 Performance
-Real-time updates: 500ms game ticks
+Full Docker support with both production and development configurations.
 
-Input throttling: 50ms minimum between inputs
+**Quick Commands:**
+```bash
+# Production (optimized builds)
+make up              # Start production containers
+make down            # Stop containers
+make logs            # View logs
 
-Spectrum updates: Real-time column height calculations
+# Development (with hot-reload)
+make dev             # Start dev environment
+make dev-down        # Stop dev environment
 
-Multi-room support: Concurrent games with separate states
+# Utilities
+make ps              # Show container status
+make shell-server    # Open shell in server container
+make clean           # Remove all containers and volumes
+```
+
+**Manual Docker Commands:**
+```bash
+# Production
+docker-compose up -d
+docker-compose down
+
+# Development
+docker-compose -f docker-compose.dev.yml up
+docker-compose -f docker-compose.dev.yml down
+```
+
+**Architecture:**
+- **Server Container**: Node.js backend on port 3000
+- **Client Container**: Nginx serving React build on port 80
+- **Network**: Custom bridge network for inter-container communication
+- **Volumes**: Development mode mounts source code for hot-reload
+
+**For detailed Docker documentation**, see [DOCKER.md](DOCKER.md)
+
+---
+
+## 📊 Performance
+
+- **Real-time updates**: 500ms game ticks
+- **Input throttling**: 50ms minimum between inputs
+- **Spectrum updates**: Real-time column height calculations
+- **Multi-room support**: Concurrent games with separate states
 
 ## 🤝 Contributing
 Fork the repository

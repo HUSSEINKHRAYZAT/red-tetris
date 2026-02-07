@@ -1,0 +1,47 @@
+# Development Docker Compose with hot reload
+version: '3.8'
+
+services:
+  # Backend Server (Development)
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server.dev
+    container_name: redtetris-server-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+    command: npm run dev
+    restart: unless-stopped
+    networks:
+      - redtetris-network
+
+  # Frontend Client (Development)
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client.dev
+    container_name: redtetris-client-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:3000
+    command: npm run dev
+    depends_on:
+      - server
+    restart: unless-stopped
+    networks:
+      - redtetris-network
+
+networks:
+  redtetris-network:
+    driver: bridge
