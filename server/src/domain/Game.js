@@ -49,6 +49,7 @@ class Game {
       delete p.activePiece;
       delete p.lines;
       delete p.lastClear;
+      delete p.lockTimer;
     }
 
     this.ensureHost();
@@ -181,6 +182,7 @@ class Game {
       p.alive = true;
       p.lines = 0;
       p.lastClear = 0;
+      p.lockTimer = 0; // Lock delay: 0 = can move, 1 = will lock next tick
 
       this.spawnPieceForPlayer(p);
 
@@ -197,33 +199,49 @@ class Game {
     for (const p of this.players.values()) {
       if (!p.alive || !p.activePiece || !p.board) continue;
 
-      // try move down
+      // Initialize lockTimer if it doesn't exist (for backward compatibility)
+      if (p.lockTimer === undefined) p.lockTimer = 0;
+
+      // Try move down
       p.activePiece.moveDown();
 
-      // collision -> revert, lock, clear, attack, spawn
+      // Check collision
       if (!p.board.canPlace(p.activePiece.getCells())) {
-        p.activePiece.y -= 1;
+        p.activePiece.y -= 1; // Revert move
 
-        // lock piece
-        p.board.lockCells(p.activePiece.getCells(), 1);
+        // Lock delay: piece becomes immobile only on the next frame
+        if (p.lockTimer === 0) {
+          // First frame touching ground - start lock delay
+          p.lockTimer = 1;
+          p.lastClear = 0;
+          continue; // Don't lock yet, wait for next tick
+        } else {
+          // Second frame - lock the piece
+          p.lockTimer = 0; // Reset for next piece
 
-        // clear lines
-        const cleared = p.board.clearFullLines();
-        p.lastClear = cleared;
-        p.lines = (p.lines ?? 0) + cleared;
+          // Lock piece
+          p.board.lockCells(p.activePiece.getCells(), 1);
 
-        // ✅ attacks
-        const garbage = this.linesToGarbage(cleared);
-        this.sendGarbage(p.id, garbage);
+          // Clear lines
+          const cleared = p.board.clearFullLines();
+          p.lastClear = cleared;
+          p.lines = (p.lines ?? 0) + cleared;
 
-        // spawn next
-        this.spawnPieceForPlayer(p);
+          // ✅ Attacks
+          const garbage = this.linesToGarbage(cleared);
+          this.sendGarbage(p.id, garbage);
 
-        if (!p.board.canPlace(p.activePiece.getCells())) {
-          p.alive = false;
-          p.activePiece = null;
+          // Spawn next
+          this.spawnPieceForPlayer(p);
+
+          if (!p.board.canPlace(p.activePiece.getCells())) {
+            p.alive = false;
+            p.activePiece = null;
+          }
         }
       } else {
+        // Piece moved successfully - reset lock timer
+        p.lockTimer = 0;
         p.lastClear = 0;
       }
     }
@@ -293,9 +311,15 @@ class Game {
     }
 
     if (!p.board.canPlace(p.activePiece.getCells())) {
+      // Collision - revert move
       p.activePiece.x = oldX;
       p.activePiece.y = oldY;
       p.activePiece.rot = oldRot;
+    } else {
+      // Successful move - reset lock timer (allows adjustments during lock delay)
+      if (p.lockTimer !== undefined && p.lockTimer > 0) {
+        p.lockTimer = 0;
+      }
     }
 
     return { gameOver: false };

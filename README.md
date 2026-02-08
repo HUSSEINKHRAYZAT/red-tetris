@@ -141,7 +141,7 @@ red-tetris/
 │
 ├── public/                  # Static assets
 ├── tests/                   # Test files
-├── .env.example             # Environment variables template
+├── .env                     # Environment configuration (single file)
 ├── .gitignore
 └── README.md
 ```

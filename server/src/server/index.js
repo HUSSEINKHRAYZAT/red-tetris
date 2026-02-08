@@ -1,5 +1,6 @@
 const express = require("express");
 const http = require("http");
+const path = require("path");
 const { Server } = require("socket.io");
 const registerSocketHandlers = require("./socketHandlers");
 const { GameRegistry } = require("./registry");
@@ -18,6 +19,27 @@ const io = new Server(server, {
   },
 });
 app.use(express.static("public"));
+
+// URL-based game join route: /:room/:player
+// Serves index.html and lets the client parse URL params
+app.get('/:room/:player', (req, res) => {
+  const indexPath = path.join(__dirname, '../../public/index.html');
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      // If index.html doesn't exist (dev mode), send a simple message
+      res.status(200).send(`
+        <!DOCTYPE html>
+        <html>
+          <head><title>Red Tetris</title></head>
+          <body>
+            <p>Game join URL detected: Room "${req.params.room}", Player "${req.params.player}"</p>
+            <p>In development, please use the Vite dev server at http://localhost:5173/${req.params.room}/${req.params.player}</p>
+          </body>
+        </html>
+      `);
+    }
+  });
+});
 
 const registry = new GameRegistry();
 registerSocketHandlers(io, registry);

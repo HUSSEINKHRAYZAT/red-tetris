@@ -23,7 +23,7 @@
  */
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import { SOCKET_URL } from '@/lib/api';
 
@@ -51,6 +51,7 @@ import { socketStorage } from '@/lib/utils/storage';
 
 export default function GamePage() {
   const navigate = useNavigate();
+  const urlParams = useParams<{ room?: string; player?: string }>();
 
   // Socket state
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -82,9 +83,24 @@ export default function GamePage() {
    * Initialize socket connection and load room/name from storage
    */
   useEffect(() => {
-    // Load room and name from storage
-    const storedRoom = socketStorage.getCurrentRoom();
-    const storedName = socketStorage.getPlayerName();
+    // Priority 1: Use URL parameters if available (/:room/:player route)
+    // Priority 2: Fall back to storage (manual join via dialog)
+    let storedRoom: string | null = null;
+    let storedName: string | null = null;
+
+    if (urlParams.room && urlParams.player) {
+      // URL-based join
+      storedRoom = urlParams.room;
+      storedName = urlParams.player;
+      
+      // Save to storage for consistency
+      socketStorage.setCurrentRoom(storedRoom);
+      socketStorage.setPlayerName(storedName);
+    } else {
+      // Manual join - load from storage
+      storedRoom = socketStorage.getCurrentRoom();
+      storedName = socketStorage.getPlayerName();
+    }
 
     if (!storedRoom || !storedName) {
       // Redirect to main page if no room/name
@@ -139,7 +155,7 @@ export default function GamePage() {
       socketStorage.clearSocketId();
       newSocket.disconnect();
     };
-  }, [navigate]);
+  }, [navigate, urlParams.room, urlParams.player]);
 
   /**
    * Socket event handlers
