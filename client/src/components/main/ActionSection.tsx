@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Users } from 'lucide-react';
 import {
@@ -15,6 +16,7 @@ import { isValidPlayerName, isValidRoomId, generateRoomId } from '../../lib/util
 import { socketService } from '../../lib/socket/services/socketService'
 
 export default function ActionSection() {
+  const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false)
   const [playerName, setPlayerName] = useState(socketStorage.getPlayerName() ?? '')
   const [roomId, setRoomId] = useState('')
@@ -108,21 +110,12 @@ export default function ActionSection() {
     const soloRoomId = generateRoomId()
     socketStorage.setCurrentRoom(soloRoomId)
 
-    try {
-      // Connect to server
-      await socketService.connect()
+    // Navigate using URL pattern /:room/:playerName
+    navigate(`/${soloRoomId}/${encodeURIComponent(name)}`)
 
-      // Join the solo room
-      socketService.joinRoom(soloRoomId, name)
-
-      // Navigate to game page
-      window.location.href = '/game'
-
-      // close with animation
-      handleDialogOpenChange(false)
-    } catch (error) {
-      setIsConnecting(false)
-    }
+    // close with animation
+    handleDialogOpenChange(false)
+    setIsConnecting(false)
   }
 
   async function handleJoinOrCreateRoom() {
@@ -141,21 +134,12 @@ export default function ActionSection() {
     socketStorage.setPlayerName(name)
     socketStorage.setCurrentRoom(room)
 
-    try {
-      // Connect to server
-      await socketService.connect()
+    // Navigate using URL pattern /:room/:playerName
+    navigate(`/${room}/${encodeURIComponent(name)}`)
 
-      // Join the room
-      socketService.joinRoom(room, name)
-
-      // Navigate to game page
-      window.location.href = '/game'
-
-      // close with animation
-      handleDialogOpenChange(false)
-    } catch (error) {
-      setIsConnecting(false)
-    }
+    // close with animation
+    handleDialogOpenChange(false)
+    setIsConnecting(false)
   }
 
   function handleGenerateRoom() {

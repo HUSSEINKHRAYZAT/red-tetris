@@ -51,7 +51,7 @@ import { socketStorage } from '@/lib/utils/storage';
 
 export default function GamePage() {
   const navigate = useNavigate();
-  const urlParams = useParams<{ room?: string; player?: string }>();
+  const urlParams = useParams<{ room?: string; playerName?: string }>();
 
   // Socket state
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -83,15 +83,15 @@ export default function GamePage() {
    * Initialize socket connection and load room/name from storage
    */
   useEffect(() => {
-    // Priority 1: Use URL parameters if available (/:room/:player route)
+    // Priority 1: Use URL parameters if available (/:room/:playerName route)
     // Priority 2: Fall back to storage (manual join via dialog)
     let storedRoom: string | null = null;
     let storedName: string | null = null;
 
-    if (urlParams.room && urlParams.player) {
-      // URL-based join
-      storedRoom = urlParams.room;
-      storedName = urlParams.player;
+    if (urlParams.room && urlParams.playerName) {
+      // URL-based join - decode the player name
+      storedRoom = decodeURIComponent(urlParams.room);
+      storedName = decodeURIComponent(urlParams.playerName);
       
       // Save to storage for consistency
       socketStorage.setCurrentRoom(storedRoom);
@@ -155,7 +155,7 @@ export default function GamePage() {
       socketStorage.clearSocketId();
       newSocket.disconnect();
     };
-  }, [navigate, urlParams.room, urlParams.player]);
+  }, [navigate, urlParams.room, urlParams.playerName]);
 
   /**
    * Socket event handlers

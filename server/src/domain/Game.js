@@ -20,6 +20,8 @@ class Game {
       id: socketId,
       name,
       isHost: this.players.size === 0,
+      // index into the shared pieceQueue for this player's personal sequence
+      nextIndex: 0,
     });
 
     this.ensureHost();
@@ -50,6 +52,8 @@ class Game {
       delete p.lines;
       delete p.lastClear;
       delete p.lockTimer;
+      // Reset per-player sequence index
+      p.nextIndex = 0;
     }
 
     this.ensureHost();
@@ -77,6 +81,7 @@ class Game {
 
   refillQueue() {
     // Keep a modest lookahead; refill with a new bag when queue is running low
+    // Accept optional dynamic minimum by checking callers using the current length.
     while (this.pieceQueue.length < 14) {
       this.pieceQueue.push(...this.generateBag());
       // limit ultimate queue growth
@@ -90,8 +95,21 @@ class Game {
   }
 
   spawnPieceForPlayer(p) {
-    // Draw next piece type from the shared room queue
-    const type = this.drawNextType();
+    // Ensure player has a nextIndex
+    if (p.nextIndex === undefined) p.nextIndex = 0;
+
+    // Ensure the shared queue is long enough for this player's index + lookahead
+    while (p.nextIndex >= this.pieceQueue.length) {
+      this.pieceQueue.push(...this.generateBag());
+      if (this.pieceQueue.length > 200) this.pieceQueue.length = 200;
+    }
+
+    // Assign the type at the player's personal index (so every player reads from
+    // the same shared sequence but advances independently). This guarantees the
+    // same sequence of shapes for all players.
+    const type = this.pieceQueue[p.nextIndex];
+    p.nextIndex += 1;
+
     // Center spawn position - adjusted for different piece widths
     const startX = type === 'I' ? 3 : type === 'O' ? 4 : 3;
     p.activePiece = new Piece(type, startX, 0);
@@ -183,6 +201,9 @@ class Game {
       p.lines = 0;
       p.lastClear = 0;
       p.lockTimer = 0; // Lock delay: 0 = can move, 1 = will lock next tick
+
+      // reset per-player sequence index so all players start at same sequence
+      p.nextIndex = 0;
 
       this.spawnPieceForPlayer(p);
 
