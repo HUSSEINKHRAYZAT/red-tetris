@@ -155,7 +155,7 @@ export default function GamePage() {
       socketStorage.clearSocketId();
       newSocket.disconnect();
     };
-  }, [navigate, urlParams.room, urlParams.player]);
+  }, [navigate, urlParams.room, urlParams.playerName]);
 
   /**
    * Socket event handlers
