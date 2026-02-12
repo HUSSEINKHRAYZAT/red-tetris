@@ -143,8 +143,9 @@ export function sanitizeGameState(
       alive: p.alive,
       lines: p.lines,
       lastClear: p.lastClear,
-      // CRITICAL: Convert board to spectrum, discard board data
-      spectrum: calculateSpectrum(p.boardWithPiece || p.board),
+      // CRITICAL: Convert board to spectrum from locked blocks only (discard active/falling piece)
+      // Use the raw `board` (locked cells) instead of `boardWithPiece` which includes the current falling piece.
+      spectrum: calculateSpectrum(p.board),
     }));
 
   return {
