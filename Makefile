@@ -34,7 +34,7 @@ build:
 up:
 	@echo "🚀 Starting production containers..."
 	docker-compose up -d
-	@echo "✅ Application running at http://localhost"
+	@echo "✅ Application running at http://localhost:8080"
 
 down:
 	@echo "🛑 Stopping production containers..."
